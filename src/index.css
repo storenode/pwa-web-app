@@ -1,0 +1,38 @@
+@import "tailwindcss";
+@plugin "daisyui" {
+  themes: light --default, dark --prefersdark;
+}
+
+@theme {
+  --color-bg: #ffffff;
+  --color-surface: #f4f3ec;
+  --color-text: #08060d;
+  --color-text-muted: #6b6375;
+  --color-border: #e5e4e7;
+  --color-primary: #16a34a;
+
+  /* Google Identity brand button (light) */
+  --color-google-surface: #ffffff;
+  --color-google-border: #747775;
+  --color-google-text: #1f1f1f;
+  --color-google-hover: #f8f9fa;
+}
+
+[data-theme="dark"] {
+  --color-bg: #16171d;
+  --color-surface: #1f2028;
+  --color-text: #f3f4f6;
+  --color-text-muted: #9ca3af;
+  --color-border: #2e303a;
+  --color-primary: #22c55e;
+
+  /* Google Identity brand button (dark) */
+  --color-google-surface: #131314;
+  --color-google-border: #8e918f;
+  --color-google-text: #e3e3e3;
+  --color-google-hover: #1e1f20;
+}
+
+body {
+  margin: 0;
+}

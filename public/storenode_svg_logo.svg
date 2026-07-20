@@ -1,0 +1,50 @@
+<svg width="680" height="260" viewBox="0 0 680 260" role="img" xmlns="http://www.w3.org/2000/svg">
+<title>StoreNode logo</title>
+<desc>StoreNode brand mark: a storefront icon with striped awning and a node dot at the roof peak, wordmark below in handwriting-style font, green and purple palette</desc>
+
+<!-- ── orbit accents (kept from original) ─────────────── -->
+<circle cx="340" cy="88" r="62" fill="none" stroke="#10B981" stroke-width="1.5" stroke-dasharray="4 6" opacity="0.3"/>
+<circle cx="340" cy="88" r="46" fill="none" stroke="#667EEA" stroke-width="2" stroke-dasharray="3 8" opacity="0.35"/>
+
+<!-- ── connector lines with node endpoints ────────────── -->
+<line x1="80" y1="88" x2="258" y2="88" stroke="#10B981" stroke-width="1.5" stroke-dasharray="4 5" stroke-linecap="round" opacity="0.35"/>
+<line x1="422" y1="88" x2="600" y2="88" stroke="#667EEA" stroke-width="1.5" stroke-dasharray="4 5" stroke-linecap="round" opacity="0.35"/>
+<circle cx="80" cy="88" r="5" fill="#10B981" opacity="0.5"/>
+<circle cx="600" cy="88" r="5" fill="#667EEA" opacity="0.5"/>
+<circle cx="258" cy="88" r="3.5" fill="#10B981" opacity="0.7"/>
+<circle cx="422" cy="88" r="3.5" fill="#667EEA" opacity="0.7"/>
+
+<!-- ── store icon ──────────────────────────────────────── -->
+<!-- node dot at the roof peak (signature mark, kept) -->
+<circle cx="340" cy="38" r="6" fill="#10B981"/>
+<circle cx="340" cy="38" r="11" fill="none" stroke="#667EEA" stroke-width="2" opacity="0.4"/>
+
+<!-- awning: alternating scalloped stripes -->
+<path d="M284 56 h22.4 v16 a11.2 8 0 0 1 -22.4 0 z" fill="#10B981" opacity="0.9"/>
+<path d="M306.4 56 h22.4 v16 a11.2 8 0 0 1 -22.4 0 z" fill="#667EEA" opacity="0.9"/>
+<path d="M328.8 56 h22.4 v16 a11.2 8 0 0 1 -22.4 0 z" fill="#10B981" opacity="0.9"/>
+<path d="M351.2 56 h22.4 v16 a11.2 8 0 0 1 -22.4 0 z" fill="#667EEA" opacity="0.9"/>
+<path d="M373.6 56 h22.4 v16 a11.2 8 0 0 1 -22.4 0 z" fill="#10B981" opacity="0.9"/>
+<!-- awning top bar -->
+<path d="M282 56 q0 -6 6 -6 h104 q6 0 6 6" fill="none" stroke="#667EEA" stroke-width="2.5" stroke-linecap="round"/>
+
+<!-- storefront body -->
+<path d="M292 80 v46 q0 4 4 4 h88 q4 0 4 -4 v-46" fill="none" stroke="#667EEA" stroke-width="2.5" stroke-linecap="round"/>
+
+<!-- door with node-dot knob -->
+<rect x="326" y="102" width="28" height="28" rx="3" fill="none" stroke="#10B981" stroke-width="2.5"/>
+<circle cx="348" cy="117" r="2.5" fill="#10B981"/>
+
+<!-- windows -->
+<rect x="300" y="102" width="17" height="13" rx="2" fill="none" stroke="#667EEA" stroke-width="2" opacity="0.6"/>
+<rect x="363" y="102" width="17" height="13" rx="2" fill="none" stroke="#667EEA" stroke-width="2" opacity="0.6"/>
+
+<!-- ── wordmark below the icon ────────────────────────── -->
+<text x="340" y="202" text-anchor="middle" dx="-102" fill="#10B981" font-family="'Dancing Script', cursive" font-size="80" font-weight="700">Store</text>
+<text x="340" y="202" text-anchor="middle" dx="92" fill="#667EEA" font-family="'Dancing Script', cursive" font-size="80" font-weight="700">Node</text>
+
+<!-- ── tagline ─────────────────────────────────────────── -->
+<line x1="212" y1="232" x2="262" y2="232" stroke="#10B981" stroke-width="1.5" stroke-linecap="round" opacity="0.35"/>
+<line x1="418" y1="232" x2="468" y2="232" stroke="#667EEA" stroke-width="1.5" stroke-linecap="round" opacity="0.35"/>
+<text x="340" y="240" text-anchor="middle" fill="#52514E" font-family="'Dancing Script', cursive" font-size="22" font-weight="400">store operating system</text>
+</svg>
