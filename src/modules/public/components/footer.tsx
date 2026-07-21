@@ -1,4 +1,5 @@
-import { StoreNodeLogo } from "../../../shared/components/StoreNodeLogo";
+import { LogoDark } from "../../../shared/components/LogoDark";
+import { LogoLight } from "../../../shared/components/LogoLight";
 import GoogleLoginButton from "../../../shared/fields/GoogleLogin.Button";
 
 export default function PublicFooterView() {
@@ -7,7 +8,8 @@ export default function PublicFooterView() {
       <div className="container px-6 py-8 mx-auto">
         <div className="flex flex-col items-center text-center">
           <a href="#">
-            <StoreNodeLogo />
+            <LogoLight className="h-20 sm:h-18 w-auto shrink-0 dark:hidden" />
+            <LogoDark className="h-20 sm:h-18 w-auto shrink-0 hidden dark:block" />
           </a>
 
           <p className="max-w-lg mx-auto mt-4 text-text-muted">

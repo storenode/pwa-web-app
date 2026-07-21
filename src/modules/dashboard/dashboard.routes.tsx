@@ -1,10 +1,22 @@
 import type { RouteObject } from "react-router-dom";
+import ProtectedRoute from "../../shared/components/ProtectedRoute";
+import DashboardLayout from "../../shared/layouts/DashboardLayout";
 import Dashboard from "./pages/Dashboard";
 
 const dashboardRoutes: RouteObject[] = [
   {
-    path: "/dashboard",
-    element: <Dashboard />,
+    element: <ProtectedRoute />,
+    children: [
+      {
+        element: <DashboardLayout />,
+        children: [
+          {
+            path: "/dashboard",
+            element: <Dashboard />,
+          },
+        ],
+      },
+    ],
   },
 ];
 

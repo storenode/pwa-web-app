@@ -1,4 +1,5 @@
-import { StoreNodeLogo } from "../../../shared/components/StoreNodeLogo";
+import { LogoDark } from "../../../shared/components/LogoDark";
+import { LogoLight } from "../../../shared/components/LogoLight";
 import ThemeToggle from "../../../shared/components/ThemeToggle";
 
 export default function PublicHeaderView() {
@@ -11,7 +12,8 @@ export default function PublicHeaderView() {
           aria-label="Back to homepage"
           className="flex items-center p-2"
         >
-          <StoreNodeLogo className="h-[6rem] w-full" />
+          <LogoLight className="h-20 sm:h-18 w-auto shrink-0 dark:hidden" />
+          <LogoDark className="h-20 sm:h-18 w-auto shrink-0 hidden dark:block" />
         </a>
 
         {/* Theme toggle lives here */}

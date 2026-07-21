@@ -7,15 +7,12 @@ export default function AuthCallback() {
   const { session, member, isLoading } = useAuthStore();
 
   useEffect(() => {
-    console.log("AuthCallback: session", session);
-    console.log("AuthCallback: member", member);
-    console.log("AuthCallback: isLoading", isLoading);
     if (isLoading) return; // wait for AuthProvider to finish
 
     if (session && member) {
-      navigate("/dashboard");
-    } else if (!session) {
-      navigate("/");
+      navigate("/dashboard", { replace: true });
+    } else {
+      navigate("/public/home", { replace: true });
     }
   }, [session, member, isLoading, navigate]);
 
