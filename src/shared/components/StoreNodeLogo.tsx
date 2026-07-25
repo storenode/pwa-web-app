@@ -18,16 +18,16 @@ export function StoreNodeLogo({
         xmlns="http://www.w3.org/2000/svg"
         role="img"
         aria-label="StoreNode — store operating system"
-        className={`h-7 w-7 sm:h-8 sm:w-8 shrink-0 ${iconClassName}`}
+        className={`h-7 w-7 sm:h-8 sm:w-8 shrink-0 dark:hidden ${iconClassName}`}
       >
         {/* Node dot at the roof peak */}
-        <circle cx="340" cy="38" r="6" className="fill-success" />
+        <circle cx="340" cy="38" r="6" fill="#10B981" />
         <circle
           cx="340"
           cy="38"
           r="11"
           fill="none"
-          className="stroke-primary"
+          stroke="#667EEA"
           strokeWidth="2"
           opacity="0.4"
         />
@@ -35,33 +35,33 @@ export function StoreNodeLogo({
         {/* Striped awning */}
         <path
           d="M284 56 h22.4 v16 a11.2 8 0 0 1 -22.4 0 z"
-          className="fill-success"
+          fill="#10B981"
           opacity="0.9"
         />
         <path
           d="M306.4 56 h22.4 v16 a11.2 8 0 0 1 -22.4 0 z"
-          className="fill-primary"
+          fill="#667EEA"
           opacity="0.9"
         />
         <path
           d="M328.8 56 h22.4 v16 a11.2 8 0 0 1 -22.4 0 z"
-          className="fill-success"
+          fill="#10B981"
           opacity="0.9"
         />
         <path
           d="M351.2 56 h22.4 v16 a11.2 8 0 0 1 -22.4 0 z"
-          className="fill-primary"
+          fill="#667EEA"
           opacity="0.9"
         />
         <path
           d="M373.6 56 h22.4 v16 a11.2 8 0 0 1 -22.4 0 z"
-          className="fill-success"
+          fill="#10B981"
           opacity="0.9"
         />
         <path
           d="M282 56 q0 -6 6 -6 h104 q6 0 6 6"
           fill="none"
-          className="stroke-primary"
+          stroke="#667EEA"
           strokeWidth="2.5"
           strokeLinecap="round"
         />
@@ -70,7 +70,7 @@ export function StoreNodeLogo({
         <path
           d="M292 80 v46 q0 4 4 4 h88 q4 0 4 -4 v-46"
           fill="none"
-          className="stroke-primary"
+          stroke="#667EEA"
           strokeWidth="2.5"
           strokeLinecap="round"
         />
@@ -83,10 +83,10 @@ export function StoreNodeLogo({
           height="28"
           rx="3"
           fill="none"
-          className="stroke-success"
+          stroke="#10B981"
           strokeWidth="2.5"
         />
-        <circle cx="348" cy="117" r="2.5" className="fill-success" />
+        <circle cx="348" cy="117" r="2.5" fill="#10B981" />
 
         {/* Windows */}
         <rect
@@ -96,7 +96,7 @@ export function StoreNodeLogo({
           height="13"
           rx="2"
           fill="none"
-          className="stroke-primary"
+          stroke="#667EEA"
           strokeWidth="2"
           opacity="0.6"
         />
@@ -107,9 +107,88 @@ export function StoreNodeLogo({
           height="13"
           rx="2"
           fill="none"
-          className="stroke-primary"
+          stroke="#667EEA"
           strokeWidth="2"
           opacity="0.6"
+        />
+      </svg>
+      <svg
+        viewBox="280 30 120 104"
+        xmlns="http://www.w3.org/2000/svg"
+        role="img"
+        aria-label="StoreNode — store operating system"
+        className={`hidden h-7 w-7 sm:h-8 sm:w-8 shrink-0 dark:block ${iconClassName}`}
+      >
+        {/* Node dot at the roof peak */}
+        <circle cx="340" cy="38" r="6" fill="#34D399" />
+        <circle
+          cx="340"
+          cy="38"
+          r="11"
+          fill="none"
+          stroke="#818CF8"
+          strokeWidth="2"
+          opacity="0.55"
+        />
+
+        {/* Striped awning */}
+        <path d="M284 56 h22.4 v16 a11.2 8 0 0 1 -22.4 0 z" fill="#34D399" />
+        <path d="M306.4 56 h22.4 v16 a11.2 8 0 0 1 -22.4 0 z" fill="#818CF8" />
+        <path d="M328.8 56 h22.4 v16 a11.2 8 0 0 1 -22.4 0 z" fill="#34D399" />
+        <path d="M351.2 56 h22.4 v16 a11.2 8 0 0 1 -22.4 0 z" fill="#818CF8" />
+        <path d="M373.6 56 h22.4 v16 a11.2 8 0 0 1 -22.4 0 z" fill="#34D399" />
+        <path
+          d="M282 56 q0 -6 6 -6 h104 q6 0 6 6"
+          fill="none"
+          stroke="#818CF8"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+        />
+
+        {/* Storefront body */}
+        <path
+          d="M292 80 v46 q0 4 4 4 h88 q4 0 4 -4 v-46"
+          fill="none"
+          stroke="#818CF8"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+        />
+
+        {/* Door */}
+        <rect
+          x="326"
+          y="102"
+          width="28"
+          height="28"
+          rx="3"
+          fill="none"
+          stroke="#34D399"
+          strokeWidth="2.5"
+        />
+        <circle cx="348" cy="117" r="2.5" fill="#34D399" />
+
+        {/* Windows */}
+        <rect
+          x="300"
+          y="102"
+          width="17"
+          height="13"
+          rx="2"
+          fill="none"
+          stroke="#818CF8"
+          strokeWidth="2"
+          opacity="0.75"
+        />
+        <rect
+          x="363"
+          y="102"
+          width="17"
+          height="13"
+          rx="2"
+          fill="none"
+          stroke="#818CF8"
+          strokeWidth="2"
+          opacity="0.75"
         />
       </svg>
       <div className="flex flex-col min-w-0 leading-tight">
