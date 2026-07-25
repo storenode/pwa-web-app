@@ -1,16 +1,24 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../../../lib/supabase";
 import ThemeToggle from "../../components/ThemeToggle";
-import { LogoLight } from "../../components/LogoLight";
-import { LogoDark } from "../../components/LogoDark";
+import { StoreNodeLogo } from "../../components/StoreNodeLogo";
+import { useAuthStore } from "../../store/authStore";
 
 export default function Navbar() {
   const navigate = useNavigate();
+  const member = useAuthStore((state) => state.member);
+  const [avatarError, setAvatarError] = useState(false);
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
     navigate("/public/home", { replace: true });
   };
+
+  const initials =
+    member?.name?.trim()?.[0]?.toUpperCase() ??
+    member?.email?.trim()?.[0]?.toUpperCase() ??
+    "U";
 
   return (
     <nav className="navbar w-full bg-base-300">
@@ -35,18 +43,48 @@ export default function Navbar() {
         </svg>
       </label>
       <div className="flex-1 min-w-0 px-2 sm:px-4">
-        <LogoLight className="h-12 sm:h-10 w-auto shrink-0 dark:hidden" />
-        <LogoDark className="h-12 sm:h-10 w-auto shrink-0 hidden dark:block" />
+        <StoreNodeLogo subtitle="Store operating system" />
       </div>
       <div className="flex items-center gap-2 sm:gap-4 px-2 sm:px-4 shrink-0">
         <ThemeToggle />
-        <button
-          type="button"
-          onClick={handleSignOut}
-          className="btn btn-sm btn-ghost"
-        >
-          Sign out
-        </button>
+        <div className="dropdown dropdown-end">
+          <div
+            tabIndex={0}
+            role="button"
+            aria-label="Account menu"
+            className="btn btn-ghost btn-circle avatar avatar-placeholder"
+          >
+            {member?.avatarUrl && !avatarError ? (
+              <div className="w-8 rounded-full">
+                <img
+                  src={member.avatarUrl}
+                  alt={member.name ?? "User"}
+                  referrerPolicy="no-referrer"
+                  onError={() => setAvatarError(true)}
+                />
+              </div>
+            ) : (
+              <div className="bg-neutral text-neutral-content w-8 rounded-full">
+                <span className="text-sm">{initials}</span>
+              </div>
+            )}
+          </div>
+          <ul
+            tabIndex={0}
+            className="menu dropdown-content bg-base-100 rounded-box z-1 mt-3 w-48 p-2 shadow"
+          >
+            {(member?.name || member?.email) && (
+              <li className="menu-title truncate">
+                {member?.name ?? member?.email}
+              </li>
+            )}
+            <li>
+              <button type="button" onClick={handleSignOut}>
+                Sign out
+              </button>
+            </li>
+          </ul>
+        </div>
       </div>
     </nav>
   );

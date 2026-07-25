@@ -14,6 +14,10 @@ function toMember(session: Session | null): Member | null {
       (user_metadata?.full_name as string | undefined) ??
       (user_metadata?.name as string | undefined) ??
       null,
+    avatarUrl:
+      (user_metadata?.avatar_url as string | undefined) ??
+      (user_metadata?.picture as string | undefined) ??
+      null,
   };
 }
 

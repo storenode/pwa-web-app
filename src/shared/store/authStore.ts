@@ -5,6 +5,7 @@ export interface Member {
   id: string
   email: string | null
   name: string | null
+  avatarUrl: string | null
 }
 
 interface AuthState {
