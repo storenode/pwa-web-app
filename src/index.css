@@ -6,6 +6,9 @@
     dark --prefersdark;
 }
 
+@custom-variant is-drawer-open (.drawer:has(> .drawer-toggle:checked) &);
+@custom-variant is-drawer-close (.drawer:has(> .drawer-toggle:not(:checked)) &);
+
 @theme {
   --color-bg: #ffffff;
   --color-surface: #f4f3ec;

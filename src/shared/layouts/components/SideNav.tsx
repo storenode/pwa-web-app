@@ -1,5 +1,8 @@
 import { Link } from "react-router-dom";
 import { useNavStore } from "../../store/navStore";
+import { StoreNodeLogo } from "../../components/StoreNodeLogo";
+import { LogoLight } from "../../components/LogoLight";
+import { LogoDark } from "../../components/LogoDark";
 
 const NAV_ITEMS = [
   {
@@ -28,6 +31,39 @@ export default function SideNav() {
 
   return (
     <div className="flex min-h-full flex-col items-start bg-base-200 is-drawer-close:w-14 is-drawer-open:w-64">
+      <div className="flex flex-col items-center w-full items-center justify-center py-4 px-2 is-drawer-close:hidden">
+        <div className="flex justify-end w-full block md:hidden">
+          <label
+            htmlFor="dashboard-drawer"
+            aria-label="close sidebar"
+            className="btn btn-link"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              className="size-6"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M6 18 18 6M6 6l12 12"
+              />
+            </svg>
+          </label>
+        </div>
+        <a
+          rel="noopener noreferrer"
+          href="#"
+          aria-label="Back to homepage"
+          className="flex items-center p-2"
+        >
+          <LogoLight className="h-20 sm:h-18 w-auto shrink-0 dark:hidden" />
+          <LogoDark className="h-20 sm:h-18 w-auto shrink-0 hidden dark:block" />
+        </a>
+      </div>
       <ul className="menu w-full grow">
         {NAV_ITEMS.map((item) => (
           <li key={item.path}>

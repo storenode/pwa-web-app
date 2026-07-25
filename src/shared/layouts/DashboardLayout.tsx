@@ -14,7 +14,7 @@ export default function DashboardLayout() {
   const location = useLocation();
   const setActiveLink = useNavStore((state) => state.setActiveLink);
   const { register } = useForm<DrawerForm>({
-    defaultValues: { drawerOpen: false },
+    defaultValues: { drawerOpen: true },
   });
 
   useEffect(() => {
