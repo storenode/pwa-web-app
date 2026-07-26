@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Link, matchPath } from "react-router-dom";
 import { useNavStore } from "../../store/navStore";
-import { StoreNodeLogo } from "../../components/StoreNodeLogo";
 import { LogoLight } from "../../components/LogoLight";
 import { LogoDark } from "../../components/LogoDark";
 
