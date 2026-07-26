@@ -4,17 +4,22 @@ import { useAuthStore } from "../../../shared/store/authStore";
 
 export default function AuthCallback() {
   const navigate = useNavigate();
-  const { session, member, isLoading } = useAuthStore();
+  const { session, member, isLoading, hasNode } = useAuthStore();
 
   useEffect(() => {
     if (isLoading) return; // wait for AuthProvider to finish
-
+    console.log("AuthCallback: session, member, hasNode", {
+      session,
+      member,
+      hasNode,
+    });
     if (session && member) {
-      navigate("/dashboard", { replace: true });
+      if (hasNode === null) return; // wait for node membership check
+      navigate(hasNode ? "/dashboard" : "/public/no-node", { replace: true });
     } else {
       navigate("/public/home", { replace: true });
     }
-  }, [session, member, isLoading, navigate]);
+  }, [session, member, isLoading, hasNode, navigate]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-bg">

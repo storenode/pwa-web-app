@@ -115,7 +115,7 @@ export default function Home() {
   return (
     <>
       {/* Hero */}
-      <div className="container px-6 py-16 mx-auto">
+      <div className="container px-6 py-8 sm:py-16 mx-auto">
         <div className="items-center lg:flex">
           <div className="w-full lg:w-1/2">
             <div className="lg:max-w-lg">
@@ -168,7 +168,7 @@ export default function Home() {
 
       {/* The problem */}
       <div className="bg-bg">
-        <div className="container px-6 py-14 mx-auto max-w-3xl text-center">
+        <div className="container px-6 py-8 sm:py-14 mx-auto max-w-3xl text-center">
           <p className="text-lg text-text leading-relaxed">
             Your best salesperson can't also be your marketing team. New stock
             reaches the racks, but never reaches Instagram. Customers love the

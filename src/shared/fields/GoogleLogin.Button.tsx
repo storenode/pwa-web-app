@@ -38,7 +38,10 @@ export default function GoogleLoginButton(
     setIsLoading(true);
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
-      options: { redirectTo: `${window.location.origin}/auth/callback` },
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`,
+        queryParams: { prompt: "select_account" },
+      },
     });
     if (error) {
       console.error("❌ Google Sign-in failed:", error);
