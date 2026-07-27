@@ -1,5 +1,9 @@
+import { Link } from "react-router-dom";
+import { SocialIconsPattern } from "../../../shared/components/backgrounds/SocialIconsPattern";
+import { ThreadLines } from "../../../shared/components/backgrounds/ThreadLines";
 import StoreNodeIllustration from "../../../shared/components/StoreNodeIllustration";
 import GoogleLoginButton from "../../../shared/fields/GoogleLogin.Button";
+import { scenarios } from "../data/scenarios";
 
 const chips = [
   {
@@ -111,76 +115,194 @@ function StatusBadge({ status }: { status: "live" | "soon" }) {
   );
 }
 
+/** A themed section with a faint decorative pattern behind its content. */
+function TexturedSection({
+  className = "",
+  patternClassName = "text-text/[0.05] dark:text-text/[0.08]",
+  Pattern = ThreadLines,
+  children,
+}: {
+  className?: string;
+  patternClassName?: string;
+  Pattern?: (props: { className?: string }) => React.ReactElement;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className={`relative overflow-hidden ${className}`}>
+      <Pattern
+        className={`pointer-events-none absolute inset-0 w-full h-full ${patternClassName}`}
+      />
+      <div className="relative">{children}</div>
+    </div>
+  );
+}
+
+/**
+ * Full-bleed photo section with a fixed background — the browser paints it in
+ * place while the page scrolls over it, the classic CSS parallax technique —
+ * plus a dark gradient scrim so light text stays legible over the photo.
+ */
+function ParallaxPhotoSection({
+  image,
+  className = "",
+  children,
+}: {
+  image: string;
+  className?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div
+      className={`relative bg-fixed bg-cover bg-center ${className}`}
+      style={{ backgroundImage: `url(${image})` }}
+    >
+      <div
+        className="absolute inset-0 bg-gradient-to-br from-slate-950/90 via-slate-950/75 to-slate-950/45"
+        aria-hidden="true"
+      />
+      <div className="relative">{children}</div>
+    </div>
+  );
+}
+
 export default function Home() {
   return (
     <>
-      {/* Hero */}
-      <div className="container px-6 py-8 sm:py-16 mx-auto">
-        <div className="items-center lg:flex">
-          <div className="w-full lg:w-1/2">
-            <div className="lg:max-w-lg">
-              <h1 className="text-3xl font-semibold text-text lg:text-4xl">
-                StoreNode — your store's{" "}
-                <span className="text-emerald-600">marketing and stock</span>,
-                on autopilot.
-              </h1>
+      {/* Hero — fixed-background denim photo for a real scroll parallax
+          effect. -mt-24 cancels the layout's header-offset padding so the
+          photo sits directly under the transparent header. */}
+      <ParallaxPhotoSection
+        image="/images/denim-texture-cc0.webp"
+        className="-mt-24"
+      >
+        <div className="container px-6 pt-32 pb-20 sm:pt-44 sm:pb-32 mx-auto">
+          <div className="items-center lg:flex">
+            <div className="w-full lg:w-1/2">
+              <div className="lg:max-w-lg">
+                <span className="inline-block text-xs font-semibold tracking-wide uppercase px-3 py-1 rounded-full bg-emerald-400/15 text-emerald-300 ring-1 ring-emerald-400/30">
+                  StoreNode · Store Operating System
+                </span>
 
-              <p className="mt-4 text-text-muted">
-                Keep your billing machine. StoreNode runs everything behind the
-                counter — AI-made Instagram & Facebook posts, customer reviews
-                and coupons through a QR code, and stock that finally matches
-                the racks.
-              </p>
+                <h1 className="mt-4 text-4xl font-bold text-white lg:text-5xl leading-tight">
+                  Your store's{" "}
+                  <span className="text-emerald-400">marketing and stock</span>,
+                  on autopilot.
+                </h1>
 
-              <p className="mt-2 text-text-muted">
-                మీ POS కౌంటర్ నడిపిస్తుంది. StoreNode మీ వ్యాపారాన్ని
-                నడిపిస్తుంది.
-              </p>
+                <p className="mt-5 text-slate-200">
+                  Keep your billing machine. StoreNode runs everything behind
+                  the counter — AI-made Instagram & Facebook posts, customer
+                  reviews and coupons through a QR code, and stock that finally
+                  matches the racks.
+                </p>
 
-              <div className="flex flex-wrap gap-2 mt-4">
-                {chips.map(({ label, bg, text }) => (
-                  <span
-                    key={label}
-                    className={`text-xs font-medium px-3 py-1 rounded-full ${bg} ${text}`}
+                <p className="mt-2 text-slate-300">
+                  మీ POS కౌంటర్ నడిపిస్తుంది. StoreNode మీ వ్యాపారాన్ని
+                  నడిపిస్తుంది.
+                </p>
+
+                <div className="flex flex-wrap gap-2 mt-5">
+                  {chips.map(({ label }) => (
+                    <span
+                      key={label}
+                      className="text-xs font-medium px-3 py-1 rounded-full bg-white/10 text-slate-100 ring-1 ring-white/15"
+                    >
+                      {label}
+                    </span>
+                  ))}
+                </div>
+
+                <div className="w-full mt-8 flex flex-wrap items-center gap-4">
+                  <GoogleLoginButton />
+                  <button
+                    type="button"
+                    className="text-sm font-medium text-slate-200 underline underline-offset-4 hover:text-white transition-colors"
                   >
-                    {label}
-                  </span>
-                ))}
-              </div>
-
-              <div className="w-full mt-6 flex flex-wrap items-center gap-4">
-                <GoogleLoginButton />
-                <button
-                  type="button"
-                  className="text-sm font-medium text-text-muted underline underline-offset-4 hover:text-text transition-colors"
-                >
-                  Watch the 2-minute demo
-                </button>
+                    Watch the 2-minute demo
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className="w-full md:w-[420px] lg:w-[500px] flex-shrink-0">
-            <StoreNodeIllustration />
+            <div className="w-full md:w-[420px] lg:w-[500px] flex-shrink-0 mt-12 lg:mt-0">
+              <StoreNodeIllustration />
+            </div>
           </div>
+        </div>
+      </ParallaxPhotoSection>
+
+      {/* Scenarios teaser */}
+      <div className="bg-bg">
+        <div className="container px-20 py-20 sm:py-20 mx-auto max-w-full text-center">
+          <span className="text-xs font-semibold tracking-wide uppercase text-emerald-600 dark:text-emerald-400">
+            See it in action
+          </span>
+          <h2 className="mt-2 text-2xl font-bold text-text sm:text-3xl">
+            See it solve a real store's problem
+          </h2>
+          <p className="mt-3 text-text-muted">
+            Each scenario walks through a real problem, the story behind it, and
+            how StoreNode resolves it — with a working demo.
+          </p>
+
+          {scenarios.length === 0 ? (
+            <div className="mt-8 p-8 border border-dashed border-border rounded-2xl">
+              <p className="text-text-muted">
+                No scenarios published yet — we're recording the first ones now.
+                Check back soon.
+              </p>
+            </div>
+          ) : (
+            <div className="grid gap-6 mt-8 sm:grid-cols-1 lg:grid-cols-2 text-left">
+              {scenarios.map((scenario) => (
+                <Link
+                  key={scenario.slug}
+                  to={`/scenarios/${scenario.slug}`}
+                  className="p-6 border border-border rounded-2xl bg-surface hover:border-emerald-400 dark:hover:border-emerald-500 transition-colors"
+                >
+                  <h3 className="font-semibold text-text">{scenario.title}</h3>
+                  <p className="mt-2 text-sm text-text-muted">
+                    {scenario.problem}
+                  </p>
+                  <div className="flex flex-wrap gap-1.5 mt-3">
+                    {scenario.tags.map((tag) => (
+                      <span
+                        key={tag}
+                        className="text-xs font-medium px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </Link>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 
       {/* The problem */}
-      <div className="bg-bg">
-        <div className="container px-6 py-8 sm:py-14 mx-auto max-w-3xl text-center">
-          <p className="text-lg text-text leading-relaxed">
+      <TexturedSection
+        className="bg-surface py-16 sm:py-24"
+        Pattern={SocialIconsPattern}
+        patternClassName="text-indigo-500/[0.08] dark:text-indigo-300/[0.08]"
+      >
+        <div className="container px-6 mx-auto max-w-3xl text-center bg-base-100">
+          <span className="text-xs font-semibold tracking-wide uppercase text-amber-600 dark:text-amber-400">
+            The problem
+          </span>
+          <p className="mt-4 text-xl text-text leading-relaxed">
             Your best salesperson can't also be your marketing team. New stock
             reaches the racks, but never reaches Instagram. Customers love the
             store, but their numbers stay in the billing machine. The godown
             Excel says one number, the shelf says another.
           </p>
-          <p className="mt-4 text-lg font-semibold text-text">
+          <p className="mt-6 text-lg font-semibold text-emerald-700 dark:text-emerald-400">
             StoreNode fixes the business behind the counter — without touching
             your billing.
           </p>
         </div>
-      </div>
+      </TexturedSection>
 
       {/* Five pillars */}
       <div className="container px-6 py-16 mx-auto">
@@ -229,8 +351,8 @@ export default function Home() {
       </div>
 
       {/* Positioning strip */}
-      <div className="bg-emerald-600">
-        <div className="container px-6 py-8 mx-auto text-center">
+      <div className="bg-emerald-600 dark:bg-emerald-700">
+        <div className="container px-6 py-10 mx-auto text-center">
           <p className="text-xl font-semibold text-white">
             The POS runs the counter. StoreNode runs the business behind the
             counter.
@@ -239,6 +361,24 @@ export default function Home() {
             No billing migration. No new hardware. Works alongside QueueBuster
             or any POS.
           </p>
+        </div>
+
+        <div className="border-t border-white/15">
+          <div className="container grid grid-cols-2 gap-8 px-6 py-8 mx-auto text-center sm:grid-cols-4">
+            {[
+              { value: "2", label: "Live features today" },
+              { value: "3", label: "Coming next" },
+              { value: "₹5,000", label: "Flat, per month" },
+              { value: "0", label: "Hidden fees" },
+            ].map((stat) => (
+              <div key={stat.label}>
+                <p className="text-2xl font-bold text-white sm:text-3xl">
+                  {stat.value}
+                </p>
+                <p className="mt-1 text-xs text-emerald-50">{stat.label}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 

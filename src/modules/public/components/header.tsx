@@ -1,11 +1,26 @@
 import { LogoDark } from "../../../shared/components/LogoDark";
 import { LogoLight } from "../../../shared/components/LogoLight";
 import ThemeToggle from "../../../shared/components/ThemeToggle";
+import { useScrolled } from "../../../shared/hooks/useScrolled";
 
 export default function PublicHeaderView() {
+  const scrolled = useScrolled(
+    typeof window === "undefined" ? 500 : window.innerHeight * 0.7,
+  );
+
   return (
-    <header className="p-4 transition-colors duration-300">
-      <div className="container flex justify-between items-center h-16 mx-auto">
+    <header
+      className={`fixed inset-x-0 top-0 z-50 p-4 transition-colors duration-300 ${
+        scrolled
+          ? "bg-bg/90 backdrop-blur border-b border-border shadow-sm"
+          : "bg-transparent border-b border-transparent"
+      }`}
+    >
+      <div
+        className={`container flex justify-between items-center h-16 mx-auto transition-colors duration-300 ${
+          scrolled ? "text-text" : "text-white"
+        }`}
+      >
         <a
           rel="noopener noreferrer"
           href="#"

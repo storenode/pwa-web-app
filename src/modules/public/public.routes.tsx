@@ -4,6 +4,7 @@ import PublicLayout from "./public.layout";
 import Home from "./pages/home";
 import AuthCallback from "./pages/AuthCallback";
 import NoNodeAttached from "./pages/NoNodeAttached";
+import ScenarioDetail from "./pages/ScenarioDetail";
 
 const publicRoutes: RouteObject[] = [
   {
@@ -12,6 +13,10 @@ const publicRoutes: RouteObject[] = [
       {
         path: "/public/home",
         element: <Home />,
+      },
+      {
+        path: "/scenarios/:slug",
+        element: <ScenarioDetail />,
       },
       {
         path: "/auth/callback",
