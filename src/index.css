@@ -10,11 +10,11 @@
 @custom-variant is-drawer-close (.drawer:has(> .drawer-toggle:not(:checked)) &);
 
 @theme {
-  --color-bg: #ffffff;
-  --color-surface: #f4f3ec;
-  --color-text: #08060d;
-  --color-text-muted: #6b6375;
-  --color-border: #e5e4e7;
+  --color-bg: #fafafa;
+  --color-surface: #ffffff;
+  --color-text: #18181b;
+  --color-text-muted: #71717a;
+  --color-border: #e4e4e7;
   --color-primary: #16a34a;
 
   /* Google Identity brand button (light) */
@@ -41,4 +41,12 @@
 
 body {
   margin: 0;
+}
+
+[data-theme="light"] .node-tree-table thead tr {
+  background-color: #ffffff;
+}
+
+[data-theme="light"] .node-tree-table tbody tr {
+  background-color: #ffffff;
 }

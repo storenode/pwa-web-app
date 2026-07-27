@@ -3,6 +3,7 @@ import { RouterProvider } from 'react-router-dom'
 import { router } from './router'
 import { useThemeStore } from './shared/store/themeStore'
 import { AuthProvider } from './shared/providers/AuthProvider'
+import { NodesProvider } from './shared/providers/NodesProvider'
 
 function App() {
   const theme = useThemeStore((state) => state.theme)
@@ -13,7 +14,9 @@ function App() {
 
   return (
     <AuthProvider>
-      <RouterProvider router={router} />
+      <NodesProvider>
+        <RouterProvider router={router} />
+      </NodesProvider>
     </AuthProvider>
   )
 }

@@ -21,7 +21,7 @@ export default function Navbar() {
     "U";
 
   return (
-    <nav className="navbar w-full bg-base-300">
+    <nav className="navbar w-full bg-base-200">
       <div className="w-full flex justify-between min-w-0 px-2 sm:px-4">
         <label
           htmlFor="dashboard-drawer"

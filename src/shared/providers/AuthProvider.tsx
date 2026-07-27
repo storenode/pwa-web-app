@@ -21,28 +21,6 @@ function toMember(session: Session | null): Member | null {
   };
 }
 
-async function syncHasNode(
-  session: Session | null,
-  setHasNode: (hasNode: boolean | null) => void,
-) {
-  if (!session?.user) {
-    setHasNode(null);
-    return;
-  }
-
-  const { count, error } = await supabase
-    .from("node_members")
-    .select("id", { count: "exact", head: true })
-    .eq("member_id", session.user.id);
-
-  if (error) {
-    console.error("Failed to check node membership:", error.message);
-    return;
-  }
-
-  setHasNode((count ?? 0) > 0);
-}
-
 async function syncMember(
   session: Session | null,
   setMember: (member: Member | null) => void,
@@ -107,33 +85,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const setSession = useAuthStore((state) => state.setSession);
   const setMember = useAuthStore((state) => state.setMember);
   const setLoading = useAuthStore((state) => state.setLoading);
-  const setHasNode = useAuthStore((state) => state.setHasNode);
 
   useEffect(() => {
     setLoading(true);
 
     supabase.auth.getSession().then(({ data }) => {
-      console.log("AuthProvider: initial session", data.session);
       setSession(data.session);
       setMember(toMember(data.session));
       setLoading(false);
       void syncMember(data.session, setMember);
-      void syncHasNode(data.session, setHasNode);
     });
 
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
-      console.log("onAuthStateChange: initial session", session);
       setSession(session);
       setMember(toMember(session));
       setLoading(false);
       void syncMember(session, setMember);
-      void syncHasNode(session, setHasNode);
     });
 
     return () => subscription.unsubscribe();
-  }, [setSession, setMember, setLoading, setHasNode]);
+  }, [setSession, setMember, setLoading]);
 
   return <>{children}</>;
 }

@@ -1,25 +1,25 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../../shared/store/authStore";
+import { useNodesStore } from "../../../shared/store/nodesStore";
 
 export default function AuthCallback() {
   const navigate = useNavigate();
-  const { session, member, isLoading, hasNode } = useAuthStore();
+  const { session, member, isLoading } = useAuthStore();
+  const { memberships, isLoading: nodesLoading } = useNodesStore();
 
   useEffect(() => {
     if (isLoading) return; // wait for AuthProvider to finish
-    console.log("AuthCallback: session, member, hasNode", {
-      session,
-      member,
-      hasNode,
-    });
+
     if (session && member) {
-      if (hasNode === null) return; // wait for node membership check
-      navigate(hasNode ? "/dashboard" : "/public/no-node", { replace: true });
+      if (nodesLoading) return; // wait for node membership check
+      navigate(memberships.length > 0 ? "/dashboard" : "/public/no-node", {
+        replace: true,
+      });
     } else {
       navigate("/public/home", { replace: true });
     }
-  }, [session, member, isLoading, hasNode, navigate]);
+  }, [session, member, isLoading, memberships, nodesLoading, navigate]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-bg">

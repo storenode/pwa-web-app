@@ -2,6 +2,9 @@
 .branches
 .temp
 
+# Test account credentials (see test-seed.sql)
+test-accounts.md
+
 # dotenvx
 .env.keys
 .env.local

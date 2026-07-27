@@ -9,7 +9,7 @@ values
   ('platform_admin', 'platform', 'Platform Admin', 1),
   ('platform_manager', 'platform', 'Platform Manager', 2),
   ('platform_editor', 'platform', 'Platform Editor', 3),
-  ('store_admin', 'store', 'Store Admin', 4),
+  ('brand_admin', 'store', 'Brand Admin', 4),
   ('store_manager', 'store', 'Store Manager', 5),
   ('sales_person', 'store', 'Sales Person', 6),
   ('helper', 'store', 'Helper', 7),

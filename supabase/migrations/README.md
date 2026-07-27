@@ -64,6 +64,30 @@ Similar to `db pull`, but just dumps the current schema as raw SQL to the
 file you specify, without trying to compute a "diff"-style migration.
 Also requires Docker to be running.
 
+## Running standalone SQL files (not migrations)
+
+Not every SQL file in `supabase/` is a migration. `supabase/test-seed.sql`
+and `supabase/test-seed-clean.sql` (one folder up from here), for example,
+are plain data scripts for manual role/permission testing — `db push` will
+never run them, since it only applies files under `supabase/migrations/`.
+Run them directly with `db query` instead:
+
+### `supabase db query --linked -f <file>`
+Executes the given SQL file against the **linked (remote)** database via
+the Management API, once, immediately — no tracking of "already applied"
+like migrations get. Safe to re-run these two specifically; both are
+idempotent (`on conflict ... do nothing`, lookups by email that no-op if
+the person hasn't logged in yet).
+
+```bash
+# apply test role assignments — safe to re-run any time after someone
+# in supabase/test-accounts.md logs in for the first time
+supabase db query --linked -f supabase/test-seed.sql
+
+# tear the test data back down
+supabase db query --linked -f supabase/test-seed-clean.sql
+```
+
 ## Local development database (optional)
 
 These commands run a full local copy of Supabase (Postgres + Studio +
