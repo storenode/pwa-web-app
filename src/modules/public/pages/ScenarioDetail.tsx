@@ -1,5 +1,5 @@
 import { Link, useParams } from "react-router-dom";
-import { scenarios } from "../data/scenarios";
+import { scenarios } from "../scenarios/getAllScenarios";
 
 const statusLabel = {
   planned: "Planned",
@@ -8,9 +8,12 @@ const statusLabel = {
 } as const;
 
 const statusClass = {
-  planned: "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300",
-  "in-progress": "bg-indigo-100 text-indigo-800 dark:bg-indigo-900/40 dark:text-indigo-300",
-  released: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300",
+  planned:
+    "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300",
+  "in-progress":
+    "bg-indigo-100 text-indigo-800 dark:bg-indigo-900/40 dark:text-indigo-300",
+  released:
+    "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300",
 } as const;
 
 export default function ScenarioDetail() {
@@ -20,9 +23,7 @@ export default function ScenarioDetail() {
   if (!scenario) {
     return (
       <div className="container px-6 py-24 mx-auto max-w-2xl text-center">
-        <h1 className="text-2xl font-semibold text-text">
-          Scenario not found
-        </h1>
+        <h1 className="text-2xl font-semibold text-text">Scenario not found</h1>
         <p className="mt-2 text-text-muted">
           We couldn't find a scenario at "{slug}".
         </p>
@@ -89,9 +90,7 @@ export default function ScenarioDetail() {
         <h2 className="text-xs font-semibold tracking-wide uppercase text-amber-600 dark:text-amber-400">
           How StoreNode resolves it
         </h2>
-        <p className="mt-3 text-text leading-relaxed">
-          {scenario.resolution}
-        </p>
+        <p className="mt-3 text-text leading-relaxed">{scenario.resolution}</p>
       </section>
 
       {scenario.demoVideoUrl && (

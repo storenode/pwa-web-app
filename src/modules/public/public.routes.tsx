@@ -5,6 +5,22 @@ import Home from "./pages/home";
 import AuthCallback from "./pages/AuthCallback";
 import NoNodeAttached from "./pages/NoNodeAttached";
 import ScenarioDetail from "./pages/ScenarioDetail";
+import { scenarios } from "./scenarios/getAllScenarios";
+import { scenarioPages } from "./scenarios/scenarioPages";
+
+// One route per scenario slug, each rendering its own dedicated page when
+// one exists (see scenarioPages.ts) — otherwise the generic ScenarioDetail
+// template. React Router ranks these static-path routes above the `:slug`
+// fallback below, so a scenario's own page always wins over the fallback.
+const scenarioRoutes: RouteObject[] = scenarios
+  .filter((scenario) => scenarioPages[scenario.slug])
+  .map((scenario) => {
+    const Page = scenarioPages[scenario.slug];
+    return {
+      path: `/scenarios/${scenario.slug}`,
+      element: <Page />,
+    };
+  });
 
 const publicRoutes: RouteObject[] = [
   {
@@ -14,6 +30,7 @@ const publicRoutes: RouteObject[] = [
         path: "/public/home",
         element: <Home />,
       },
+      ...scenarioRoutes,
       {
         path: "/scenarios/:slug",
         element: <ScenarioDetail />,

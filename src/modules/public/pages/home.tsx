@@ -3,7 +3,7 @@ import { SocialIconsPattern } from "../../../shared/components/backgrounds/Socia
 import { ThreadLines } from "../../../shared/components/backgrounds/ThreadLines";
 import StoreNodeIllustration from "../../../shared/components/StoreNodeIllustration";
 import GoogleLoginButton from "../../../shared/fields/GoogleLogin.Button";
-import { scenarios } from "../data/scenarios";
+import { scenarios } from "../scenarios/getAllScenarios";
 
 const chips = [
   {
@@ -253,7 +253,7 @@ export default function Home() {
               </p>
             </div>
           ) : (
-            <div className="grid gap-6 mt-8 sm:grid-cols-1 lg:grid-cols-2 text-left">
+            <div className="grid gap-6 mt-8 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 text-left">
               {scenarios.map((scenario) => (
                 <Link
                   key={scenario.slug}
