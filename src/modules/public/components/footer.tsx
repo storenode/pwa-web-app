@@ -4,7 +4,7 @@ import GoogleLoginButton from "../../../shared/fields/GoogleLogin.Button";
 
 export default function PublicFooterView() {
   return (
-    <footer className="bg-surface">
+    <footer className="bg-base-100">
       <div className="container px-6 py-8 mx-auto">
         <div className="flex flex-col items-center text-center">
           <a href="#">
@@ -12,7 +12,7 @@ export default function PublicFooterView() {
             <LogoDark className="h-20 sm:h-18 w-auto shrink-0 hidden dark:block" />
           </a>
 
-          <p className="max-w-lg mx-auto mt-4 text-text-muted">
+          <p className="max-w-lg mx-auto mt-4 text-base-content/60">
             StoreNode · store operating system
             <br />
             మీ షాప్ కోసం, మీ భాషలో.
@@ -23,17 +23,17 @@ export default function PublicFooterView() {
           </div>
         </div>
 
-        <hr className="my-10 border-border" />
+        <hr className="my-10 border-base-300" />
 
         <div className="flex flex-col items-center sm:flex-row sm:justify-between">
-          <p className="text-sm text-text-muted">
+          <p className="text-sm text-base-content/60">
             © Copyright 2021. All Rights Reserved.
           </p>
 
           <div className="flex mt-3 -mx-2 sm:mt-0">
             <a
               href="#"
-              className="mx-2 text-sm text-text-muted transition-colors duration-300 hover:text-text"
+              className="mx-2 text-sm text-base-content/60 transition-colors duration-300 hover:text-base-content"
               aria-label="Reddit"
             >
               {" "}
@@ -42,7 +42,7 @@ export default function PublicFooterView() {
 
             <a
               href="#"
-              className="mx-2 text-sm text-text-muted transition-colors duration-300 hover:text-text"
+              className="mx-2 text-sm text-base-content/60 transition-colors duration-300 hover:text-base-content"
               aria-label="Reddit"
             >
               {" "}
@@ -51,7 +51,7 @@ export default function PublicFooterView() {
 
             <a
               href="#"
-              className="mx-2 text-sm text-text-muted transition-colors duration-300 hover:text-text"
+              className="mx-2 text-sm text-base-content/60 transition-colors duration-300 hover:text-base-content"
               aria-label="Reddit"
             >
               {" "}

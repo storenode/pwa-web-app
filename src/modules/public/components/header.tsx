@@ -12,13 +12,13 @@ export default function PublicHeaderView() {
     <header
       className={`fixed inset-x-0 top-0 z-50 p-4 transition-colors duration-300 ${
         scrolled
-          ? "bg-bg/90 backdrop-blur border-b border-border shadow-sm"
+          ? "bg-base-200/90 backdrop-blur border-b border-base-300 shadow-sm"
           : "bg-transparent border-b border-transparent"
       }`}
     >
       <div
         className={`container flex justify-between items-center h-16 mx-auto transition-colors duration-300 ${
-          scrolled ? "text-text" : "text-white"
+          scrolled ? "text-base-content" : "text-white"
         }`}
       >
         <a

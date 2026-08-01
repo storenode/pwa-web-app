@@ -6,7 +6,7 @@ export default function PublicLayout() {
   return (
     <>
       <PublicHeaderView />
-      <main className="flex-1 bg-bg pt-24">
+      <main className="flex-1 bg-base-200 pt-24">
         <Outlet />
       </main>
       <PublicFooterView />

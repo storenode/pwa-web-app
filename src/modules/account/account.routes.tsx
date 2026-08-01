@@ -3,6 +3,7 @@ import ProtectedRoute from "../../shared/components/ProtectedRoute";
 import DashboardLayout from "../../shared/layouts/DashboardLayout";
 import BrowseAllNodes from "./pages/nodes";
 import AddEditNodes from "./pages/add-edit-nodes";
+import AddEditStores from "./pages/add-edit-stores";
 
 const accountRoutes: RouteObject[] = [
   {
@@ -18,6 +19,10 @@ const accountRoutes: RouteObject[] = [
           {
             path: "/node/:nodeId",
             element: <AddEditNodes />,
+          },
+          {
+            path: "/node/:nodeId/store/:storeId",
+            element: <AddEditStores />,
           },
         ],
       },

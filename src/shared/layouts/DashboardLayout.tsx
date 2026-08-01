@@ -29,9 +29,9 @@ export default function DashboardLayout() {
         className="drawer-toggle"
         {...register("drawerOpen")}
       />
-      <div className="drawer-content flex flex-col min-h-screen">
+      <div className="drawer-content flex flex-col h-screen">
         <Navbar />
-        <main className="flex-1 p-4 bg-base-50">
+        <main className="flex-1 min-h-0 overflow-y-auto p-4 bg-base-50">
           <Outlet />
         </main>
         <Footer />
@@ -42,7 +42,9 @@ export default function DashboardLayout() {
           aria-label="close sidebar"
           className="drawer-overlay"
         ></label>
-        <SideNav />
+        <div className="h-screen overflow-y-auto">
+          <SideNav />
+        </div>
       </div>
     </div>
   );

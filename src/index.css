@@ -3,20 +3,14 @@
 @plugin "daisyui" {
   themes:
     light --default,
-    dark --prefersdark;
+    dark --prefersdark,
+    cupcake;
 }
 
 @custom-variant is-drawer-open (.drawer:has(> .drawer-toggle:checked) &);
 @custom-variant is-drawer-close (.drawer:has(> .drawer-toggle:not(:checked)) &);
 
 @theme {
-  --color-bg: #fafafa;
-  --color-surface: #ffffff;
-  --color-text: #18181b;
-  --color-text-muted: #71717a;
-  --color-border: #e4e4e7;
-  --color-primary: #16a34a;
-
   /* Google Identity brand button (light) */
   --color-google-surface: #ffffff;
   --color-google-border: #747775;
@@ -25,13 +19,6 @@
 }
 
 [data-theme="dark"] {
-  --color-bg: #16171d;
-  --color-surface: #1f2028;
-  --color-text: #f3f4f6;
-  --color-text-muted: #9ca3af;
-  --color-border: #2e303a;
-  --color-primary: #22c55e;
-
   /* Google Identity brand button (dark) */
   --color-google-surface: #131314;
   --color-google-border: #8e918f;
@@ -39,14 +26,18 @@
   --color-google-hover: #1e1f20;
 }
 
+html,
 body {
+  height: 100%;
   margin: 0;
+  overflow: hidden;
 }
 
-[data-theme="light"] .node-tree-table thead tr {
-  background-color: #ffffff;
+#root {
+  height: 100%;
 }
 
-[data-theme="light"] .node-tree-table tbody tr {
-  background-color: #ffffff;
+.node-tree-table thead tr,
+.node-tree-table tbody tr {
+  background-color: var(--color-base-100);
 }

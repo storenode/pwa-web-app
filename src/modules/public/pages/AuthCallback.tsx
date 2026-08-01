@@ -22,13 +22,13 @@ export default function AuthCallback() {
   }, [session, member, isLoading, memberships, nodesLoading, navigate]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-bg">
+    <div className="min-h-screen flex items-center justify-center bg-base-200">
       <div className="text-center space-y-4">
         <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto" />
-        <p className="text-text font-semibold text-base font-sans">
+        <p className="text-base-content font-semibold text-base font-sans">
           Signing you in to SelfNode...
         </p>
-        <p className="text-text-muted text-sm font-sans">
+        <p className="text-base-content/60 text-sm font-sans">
           Setting up your profile
         </p>
       </div>

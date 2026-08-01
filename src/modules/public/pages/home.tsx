@@ -26,7 +26,7 @@ const chips = [
     bg: "bg-teal-50 dark:bg-teal-900/40",
     text: "text-teal-800 dark:text-teal-300",
   },
-  { label: "Works with your POS", bg: "bg-surface", text: "text-text-muted" },
+  { label: "Works with your POS", bg: "bg-base-100", text: "text-base-content/60" },
 ];
 
 const pillars = [
@@ -118,7 +118,7 @@ function StatusBadge({ status }: { status: "live" | "soon" }) {
 /** A themed section with a faint decorative pattern behind its content. */
 function TexturedSection({
   className = "",
-  patternClassName = "text-text/[0.05] dark:text-text/[0.08]",
+  patternClassName = "text-base-content/[0.05] dark:text-base-content/[0.08]",
   Pattern = ThreadLines,
   children,
 }: {
@@ -232,22 +232,22 @@ export default function Home() {
       </ParallaxPhotoSection>
 
       {/* Scenarios teaser */}
-      <div className="bg-bg">
+      <div className="bg-base-200">
         <div className="container px-20 py-20 sm:py-20 mx-auto max-w-full text-center">
           <span className="text-xs font-semibold tracking-wide uppercase text-emerald-600 dark:text-emerald-400">
             See it in action
           </span>
-          <h2 className="mt-2 text-2xl font-bold text-text sm:text-3xl">
+          <h2 className="mt-2 text-2xl font-bold text-base-content sm:text-3xl">
             See it solve a real store's problem
           </h2>
-          <p className="mt-3 text-text-muted">
+          <p className="mt-3 text-base-content/60">
             Each scenario walks through a real problem, the story behind it, and
             how StoreNode resolves it — with a working demo.
           </p>
 
           {scenarios.length === 0 ? (
-            <div className="mt-8 p-8 border border-dashed border-border rounded-2xl">
-              <p className="text-text-muted">
+            <div className="mt-8 p-8 border border-dashed border-base-300 rounded-2xl">
+              <p className="text-base-content/60">
                 No scenarios published yet — we're recording the first ones now.
                 Check back soon.
               </p>
@@ -258,10 +258,10 @@ export default function Home() {
                 <Link
                   key={scenario.slug}
                   to={`/scenarios/${scenario.slug}`}
-                  className="p-6 border border-border rounded-2xl bg-surface hover:border-emerald-400 dark:hover:border-emerald-500 transition-colors"
+                  className="p-6 border border-base-300 rounded-2xl bg-base-100 hover:border-emerald-400 dark:hover:border-emerald-500 transition-colors"
                 >
-                  <h3 className="font-semibold text-text">{scenario.title}</h3>
-                  <p className="mt-2 text-sm text-text-muted">
+                  <h3 className="font-semibold text-base-content">{scenario.title}</h3>
+                  <p className="mt-2 text-sm text-base-content/60">
                     {scenario.problem}
                   </p>
                   <div className="flex flex-wrap gap-1.5 mt-3">
@@ -283,7 +283,7 @@ export default function Home() {
 
       {/* The problem */}
       <TexturedSection
-        className="bg-surface py-16 sm:py-24"
+        className="bg-base-100 py-16 sm:py-24"
         Pattern={SocialIconsPattern}
         patternClassName="text-indigo-500/[0.08] dark:text-indigo-300/[0.08]"
       >
@@ -291,7 +291,7 @@ export default function Home() {
           <span className="text-xs font-semibold tracking-wide uppercase text-amber-600 dark:text-amber-400">
             The problem
           </span>
-          <p className="mt-4 text-xl text-text leading-relaxed">
+          <p className="mt-4 text-xl text-base-content leading-relaxed">
             Your best salesperson can't also be your marketing team. New stock
             reaches the racks, but never reaches Instagram. Customers love the
             store, but their numbers stay in the billing machine. The godown
@@ -306,7 +306,7 @@ export default function Home() {
 
       {/* Five pillars */}
       <div className="container px-6 py-16 mx-auto">
-        <h2 className="text-2xl font-semibold text-center text-text">
+        <h2 className="text-2xl font-semibold text-center text-base-content">
           Everything behind the counter, in one place
         </h2>
 
@@ -314,25 +314,25 @@ export default function Home() {
           {pillars.map((pillar) => (
             <div
               key={pillar.title}
-              className="p-6 border border-border rounded-2xl bg-surface"
+              className="p-6 border border-base-300 rounded-2xl bg-base-100"
             >
               <div className="flex items-start justify-between gap-2">
                 <span className="text-3xl">{pillar.emoji}</span>
                 <StatusBadge status={pillar.status} />
               </div>
-              <h3 className="mt-3 text-lg font-semibold text-text">
+              <h3 className="mt-3 text-lg font-semibold text-base-content">
                 {pillar.title}
               </h3>
-              <p className="mt-2 text-sm text-text-muted">{pillar.body}</p>
+              <p className="mt-2 text-sm text-base-content/60">{pillar.body}</p>
             </div>
           ))}
         </div>
       </div>
 
       {/* How it works */}
-      <div className="bg-bg">
+      <div className="bg-base-200">
         <div className="container px-6 py-16 mx-auto">
-          <h2 className="text-2xl font-semibold text-center text-text">
+          <h2 className="text-2xl font-semibold text-center text-base-content">
             How it works
           </h2>
 
@@ -342,8 +342,8 @@ export default function Home() {
                 <div className="mx-auto flex items-center justify-center w-10 h-10 rounded-full bg-emerald-600 text-white font-semibold">
                   {i + 1}
                 </div>
-                <h3 className="mt-4 font-semibold text-text">{step.title}</h3>
-                <p className="mt-2 text-sm text-text-muted">{step.body}</p>
+                <h3 className="mt-4 font-semibold text-base-content">{step.title}</h3>
+                <p className="mt-2 text-sm text-base-content/60">{step.body}</p>
               </div>
             ))}
           </div>
@@ -384,12 +384,12 @@ export default function Home() {
 
       {/* Pricing */}
       <div className="container px-6 py-16 mx-auto max-w-xl text-center">
-        <h2 className="text-2xl font-semibold text-text">Pricing</h2>
-        <p className="mt-6 text-4xl font-bold text-text">
+        <h2 className="text-2xl font-semibold text-base-content">Pricing</h2>
+        <p className="mt-6 text-4xl font-bold text-base-content">
           ₹5,000<span className="text-lg font-medium">/month</span>
         </p>
-        <p className="mt-1 text-text-muted">per business</p>
-        <p className="mt-4 text-text-muted">
+        <p className="mt-1 text-base-content/60">per business</p>
+        <p className="mt-4 text-base-content/60">
           Includes 2 stores; +₹1,000 per additional store. AI campaign drafting
           included (fair-use). No per-message charges, no hidden fees. WhatsApp
           Channel posting assisted, free. Cancel anytime.
@@ -400,9 +400,9 @@ export default function Home() {
       </div>
 
       {/* Trust */}
-      <div className="bg-bg">
+      <div className="bg-base-200">
         <div className="container px-6 py-14 mx-auto max-w-2xl text-center">
-          <p className="text-text leading-relaxed">
+          <p className="text-base-content leading-relaxed">
             Built in Andhra Pradesh, for Indian textile retail. StoreNode was
             born inside a real 4-city clothing business — every feature exists
             because a real store needed it. Your data stays yours: customer
@@ -414,20 +414,20 @@ export default function Home() {
 
       {/* FAQ */}
       <div className="container px-6 py-16 mx-auto max-w-2xl">
-        <h2 className="text-2xl font-semibold text-center text-text">
+        <h2 className="text-2xl font-semibold text-center text-base-content">
           Frequently asked questions
         </h2>
 
-        <div className="mt-8 divide-y divide-border border-t border-b border-border">
+        <div className="mt-8 divide-y divide-base-300 border-t border-b border-base-300">
           {faqs.map((faq) => (
             <details key={faq.q} className="group py-4">
-              <summary className="flex items-center justify-between cursor-pointer list-none font-medium text-text">
+              <summary className="flex items-center justify-between cursor-pointer list-none font-medium text-base-content">
                 {faq.q}
-                <span className="ml-4 text-text-muted transition-transform group-open:rotate-45">
+                <span className="ml-4 text-base-content/60 transition-transform group-open:rotate-45">
                   +
                 </span>
               </summary>
-              <p className="mt-3 text-sm text-text-muted">{faq.a}</p>
+              <p className="mt-3 text-sm text-base-content/60">{faq.a}</p>
             </details>
           ))}
         </div>

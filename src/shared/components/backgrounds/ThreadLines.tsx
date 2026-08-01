@@ -1,7 +1,7 @@
 /**
  * Subtle woven cotton-thread texture — two sets of fine crossing lines,
  * rendered with `currentColor` so callers control tint/opacity via
- * text-color classes (e.g. `text-text/[0.05] dark:text-text/[0.08]`).
+ * text-color classes (e.g. `text-base-content/[0.05] dark:text-base-content/[0.08]`).
  */
 export function ThreadLines({ className = "" }: { className?: string }) {
   return (

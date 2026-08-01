@@ -23,8 +23,8 @@ export default function ScenarioDetail() {
   if (!scenario) {
     return (
       <div className="container px-6 py-24 mx-auto max-w-2xl text-center">
-        <h1 className="text-2xl font-semibold text-text">Scenario not found</h1>
-        <p className="mt-2 text-text-muted">
+        <h1 className="text-2xl font-semibold text-base-content">Scenario not found</h1>
+        <p className="mt-2 text-base-content/60">
           We couldn't find a scenario at "{slug}".
         </p>
         <Link
@@ -41,7 +41,7 @@ export default function ScenarioDetail() {
     <div className="container px-6 py-16 sm:py-20 mx-auto max-w-3xl">
       <Link
         to="/public/home"
-        className="text-sm font-medium text-text-muted hover:text-text underline underline-offset-4"
+        className="text-sm font-medium text-base-content/60 hover:text-base-content underline underline-offset-4"
       >
         ← Back to home
       </Link>
@@ -53,11 +53,11 @@ export default function ScenarioDetail() {
           {statusLabel[scenario.status]}
         </span>
         {scenario.version && (
-          <span className="text-xs text-text-muted">v{scenario.version}</span>
+          <span className="text-xs text-base-content/60">v{scenario.version}</span>
         )}
       </div>
 
-      <h1 className="mt-3 text-3xl font-bold text-text leading-tight">
+      <h1 className="mt-3 text-3xl font-bold text-base-content leading-tight">
         {scenario.title}
       </h1>
 
@@ -76,21 +76,21 @@ export default function ScenarioDetail() {
         <h2 className="text-xs font-semibold tracking-wide uppercase text-emerald-600 dark:text-emerald-400">
           The problem
         </h2>
-        <p className="mt-3 text-text leading-relaxed">{scenario.problem}</p>
+        <p className="mt-3 text-base-content leading-relaxed">{scenario.problem}</p>
       </section>
 
       <section className="mt-8">
         <h2 className="text-xs font-semibold tracking-wide uppercase text-indigo-600 dark:text-indigo-400">
           The story
         </h2>
-        <p className="mt-3 text-text leading-relaxed">{scenario.story}</p>
+        <p className="mt-3 text-base-content leading-relaxed">{scenario.story}</p>
       </section>
 
       <section className="mt-8">
         <h2 className="text-xs font-semibold tracking-wide uppercase text-amber-600 dark:text-amber-400">
           How StoreNode resolves it
         </h2>
-        <p className="mt-3 text-text leading-relaxed">{scenario.resolution}</p>
+        <p className="mt-3 text-base-content leading-relaxed">{scenario.resolution}</p>
       </section>
 
       {scenario.demoVideoUrl && (

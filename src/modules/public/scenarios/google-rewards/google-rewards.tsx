@@ -53,10 +53,10 @@ export default function GoogleRewardsScenario() {
   if (!scenario) {
     return (
       <div className="container px-6 py-24 mx-auto max-w-2xl text-center">
-        <h1 className="text-2xl font-semibold text-text">
+        <h1 className="text-2xl font-semibold text-base-content">
           Scenario not found
         </h1>
-        <p className="mt-2 text-text-muted">
+        <p className="mt-2 text-base-content/60">
           We couldn't find a scenario at "{SLUG}".
         </p>
         <Link
@@ -73,7 +73,7 @@ export default function GoogleRewardsScenario() {
     <div className="container px-6 py-16 sm:py-20 mx-auto max-w-3xl">
       <Link
         to="/public/home"
-        className="text-sm font-medium text-text-muted hover:text-text underline underline-offset-4"
+        className="text-sm font-medium text-base-content/60 hover:text-base-content underline underline-offset-4"
       >
         ← Back to home
       </Link>
@@ -85,11 +85,11 @@ export default function GoogleRewardsScenario() {
           {statusLabel[scenario.status]}
         </span>
         {scenario.version && (
-          <span className="text-xs text-text-muted">v{scenario.version}</span>
+          <span className="text-xs text-base-content/60">v{scenario.version}</span>
         )}
       </div>
 
-      <h1 className="mt-3 text-3xl font-bold text-text leading-tight">
+      <h1 className="mt-3 text-3xl font-bold text-base-content leading-tight">
         {scenario.title}
       </h1>
 
@@ -108,21 +108,21 @@ export default function GoogleRewardsScenario() {
         <h2 className="text-xs font-semibold tracking-wide uppercase text-emerald-600 dark:text-emerald-400">
           The problem
         </h2>
-        <p className="mt-3 text-text leading-relaxed">{scenario.problem}</p>
+        <p className="mt-3 text-base-content leading-relaxed">{scenario.problem}</p>
       </section>
 
       <section className="mt-8">
         <h2 className="text-xs font-semibold tracking-wide uppercase text-indigo-600 dark:text-indigo-400">
           The story
         </h2>
-        <p className="mt-3 text-text leading-relaxed">{scenario.story}</p>
+        <p className="mt-3 text-base-content leading-relaxed">{scenario.story}</p>
       </section>
 
       <section className="mt-8">
         <h2 className="text-xs font-semibold tracking-wide uppercase text-amber-600 dark:text-amber-400">
           How StoreNode resolves it
         </h2>
-        <p className="mt-3 text-text leading-relaxed">
+        <p className="mt-3 text-base-content leading-relaxed">
           {scenario.resolution}
         </p>
       </section>
@@ -141,30 +141,30 @@ export default function GoogleRewardsScenario() {
                 {i + 1}
               </span>
               <div>
-                <p className="font-medium text-text">{step.title}</p>
-                <p className="mt-1 text-sm text-text-muted">{step.detail}</p>
+                <p className="font-medium text-base-content">{step.title}</p>
+                <p className="mt-1 text-sm text-base-content/60">{step.detail}</p>
               </div>
             </li>
           ))}
         </ol>
       </section>
 
-      <section className="mt-10 p-6 rounded-2xl border border-border bg-surface">
+      <section className="mt-10 p-6 rounded-2xl border border-base-300 bg-base-100">
         <h2 className="text-xs font-semibold tracking-wide uppercase text-amber-600 dark:text-amber-400">
           Worked example
         </h2>
         <div className="flex flex-wrap items-baseline gap-x-2 mt-3">
-          <span className="text-2xl font-bold text-text">₹10,000</span>
-          <span className="text-text-muted">bill</span>
-          <span className="text-text-muted">×</span>
-          <span className="text-2xl font-bold text-text">5%</span>
-          <span className="text-text-muted">=</span>
+          <span className="text-2xl font-bold text-base-content">₹10,000</span>
+          <span className="text-base-content/60">bill</span>
+          <span className="text-base-content/60">×</span>
+          <span className="text-2xl font-bold text-base-content">5%</span>
+          <span className="text-base-content/60">=</span>
           <span className="text-2xl font-bold text-emerald-700 dark:text-emerald-400">
             ₹500
           </span>
-          <span className="text-text-muted">in reward points</span>
+          <span className="text-base-content/60">in reward points</span>
         </div>
-        <p className="mt-2 text-sm text-text-muted">
+        <p className="mt-2 text-sm text-base-content/60">
           Credited automatically against the customer's phone number the
           moment their Google review is submitted — nothing for the front
           desk to type in.

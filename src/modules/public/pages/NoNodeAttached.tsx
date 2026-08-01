@@ -11,16 +11,16 @@ export default function NoNodeAttached() {
     navigate("/public/home", { replace: true });
   };
   return (
-    <div className="min-h-screen flex items-center justify-center bg-bg px-4">
+    <div className="min-h-screen flex items-center justify-center bg-base-200 px-4">
       <div className="text-center space-y-4 max-w-md">
         <div className="flex justify-center items-center space-x-2">
           <LogoLight className="h-20 sm:h-18 w-auto shrink-0 dark:hidden" />
           <LogoDark className="h-20 sm:h-18 w-auto shrink-0 hidden dark:block" />
         </div>
-        <h1 className="text-text font-semibold text-xl font-sans">
+        <h1 className="text-base-content font-semibold text-xl font-sans">
           No store attached to your account
         </h1>
-        <p className="text-text-muted text-sm font-sans">
+        <p className="text-base-content/60 text-sm font-sans">
           Your account isn&apos;t linked to a store yet. Please contact your
           store admin, or reach out to{" "}
           <a
