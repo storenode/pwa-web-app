@@ -1,5 +1,5 @@
-import { useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useNodesStore } from "../../../shared/store/nodesStore";
 import { FormProvider, useForm } from "react-hook-form";
 import { createResolver } from "@/lib/valibot";
@@ -14,11 +14,20 @@ import StoreForm, {
 import StoreMembersForm from "../components/store-members.form";
 import StoreChannelsForm from "../components/store-channels.form";
 import ComponentCard from "@/shared/fields/ComponentCard";
-import { fetchStoreMembers } from "../account.api";
+import {
+  createStore,
+  fetchStoreMembers,
+  updateStore,
+  upsertNodeChannels,
+  upsertNodeMembers,
+} from "../account.api";
 import { toMemberFormValues } from "../account.utils";
 
 export default function AddEditStores() {
   const { nodeId, storeId } = useParams<{ nodeId: string; storeId: string }>();
+  const navigate = useNavigate();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const node = useNodesStore((state) =>
     state.nodes.find((n) => n.id === nodeId),
   );
@@ -80,8 +89,27 @@ export default function AddEditStores() {
     };
   }, [storeId, methods]);
 
-  const onSubmit = methods.handleSubmit((values) => {
-    console.log(values);
+  const onSubmit = methods.handleSubmit(async (values) => {
+    if (!nodeId) return;
+    setIsSubmitting(true);
+    setSubmitError(null);
+    try {
+      const savedStore =
+        storeId && storeId !== "new" && store
+          ? await updateStore(storeId, values)
+          : await createStore(values, nodeId);
+      if (values.members?.length) {
+        await upsertNodeMembers(savedStore.id, values.members);
+      }
+      if (values.channels?.length) {
+        await upsertNodeChannels(savedStore.id, values.channels);
+      }
+      navigate("/node/");
+    } catch (err) {
+      setSubmitError((err as Error).message);
+    } finally {
+      setIsSubmitting(false);
+    }
   });
 
   return (
@@ -102,13 +130,21 @@ export default function AddEditStores() {
               <Link to="/node/" className="btn btn-ghost">
                 Cancel
               </Link>
-              <button type="submit" className="btn btn-primary">
-                Save
+              <button
+                type="button"
+                className="btn btn-primary"
+                disabled={isSubmitting}
+                onClick={() => onSubmit()}
+              >
+                {isSubmitting ? "Saving..." : "Save"}
               </button>
             </div>
           }
         >
           <form onSubmit={onSubmit} className="flex flex-col gap-4">
+            {submitError && (
+              <div className="alert alert-error text-sm">{submitError}</div>
+            )}
             <StoreForm />
             <StoreMembersForm />
             <StoreChannelsForm />

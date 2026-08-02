@@ -29,6 +29,7 @@ const emptyDraft: ChannelDraft = {
   label: "",
   isPrimary: false,
   status: "",
+  token: "",
 };
 
 export default function StoreChannelsForm() {
@@ -197,6 +198,30 @@ export default function StoreChannelsForm() {
                   {draftErrors.externalId}
                 </span>
               </div>
+            )}
+          </label>
+
+          <label className="form-control w-full sm:col-span-2">
+            <div className="label">
+              <span className="label-text">Access Token (optional)</span>
+            </div>
+            <input
+              type="password"
+              autoComplete="new-password"
+              className={`input input-bordered w-full ${draftErrors.token ? "input-error" : ""}`}
+              value={draft.token}
+              onChange={(e) => updateDraft("token", e.target.value)}
+            />
+            {draftErrors.token ? (
+              <div className="label">
+                <span className="label-text-alt text-error">
+                  {draftErrors.token}
+                </span>
+              </div>
+            ) : (
+              <span className="label">
+                Stored securely in Vault — never shown again after saving.
+              </span>
             )}
           </label>
 

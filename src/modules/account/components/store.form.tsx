@@ -214,6 +214,9 @@ export const channelSchema = s.object({
   label: s.optional(s.pipe(s.string(), s.trim())),
   isPrimary: s.optional(s.boolean()),
   status: s.picklist(CHANNEL_STATUSES, "Status is required"),
+  // Never persisted to node_channels directly — routed through the
+  // set_node_channel_token RPC into Supabase Vault on save.
+  token: s.optional(s.pipe(s.string(), s.trim())),
 });
 export type ChannelFormValues = Infer<typeof channelSchema>;
 
