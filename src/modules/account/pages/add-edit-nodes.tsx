@@ -61,18 +61,24 @@ export default function AddEditNodes() {
           ← Back to all nodes
         </Link>
 
-        <ComponentCard title={node ? node.displayName : "Add / Edit Node"}>
+        <ComponentCard
+          title={node ? node.displayName : "Add / Edit Node"}
+          actions={
+            <>
+              <div className="flex flex-row gap-2">
+                <Link to="/node/" className="btn btn-ghost">
+                  Cancel
+                </Link>
+                <button type="submit" className="btn btn-primary">
+                  Save
+                </button>
+              </div>
+            </>
+          }
+        >
           <form onSubmit={onSubmit} className="flex flex-col gap-4">
             <NodeForm />
             <NodeMembersForm nodeId={nodeId} />
-            <div className="card-actions justify-end mt-4">
-              <Link to="/node/" className="btn btn-ghost">
-                Cancel
-              </Link>
-              <button type="submit" className="btn btn-primary">
-                Save
-              </button>
-            </div>
           </form>
         </ComponentCard>
       </div>

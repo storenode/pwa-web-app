@@ -97,12 +97,8 @@ export default function AddEditStores() {
               ? `${node.displayName} — ${store ? "Edit" : "Add"} Store`
               : "Add / Edit Store"
           }
-        >
-          <form onSubmit={onSubmit} className="flex flex-col gap-4">
-            <StoreForm />
-            <StoreMembersForm />
-            <StoreChannelsForm />
-            <div className="card-actions justify-end mt-4">
+          actions={
+            <div className="flex flex-row gap-2">
               <Link to="/node/" className="btn btn-ghost">
                 Cancel
               </Link>
@@ -110,6 +106,12 @@ export default function AddEditStores() {
                 Save
               </button>
             </div>
+          }
+        >
+          <form onSubmit={onSubmit} className="flex flex-col gap-4">
+            <StoreForm />
+            <StoreMembersForm />
+            <StoreChannelsForm />
           </form>
         </ComponentCard>
       </div>
