@@ -139,11 +139,8 @@ export function NodesProvider({ children }: { children: ReactNode }) {
           (m) => m.role?.roleKey === "platform_admin",
         );
 
-        console.log("--== isPlatformAdmin ", isPlatformAdmin);
-
         if (isPlatformAdmin) {
           const nodes = await fetchAllNodes();
-          console.log("--== fetchAllNodes ", nodes);
           if (cancelled) return;
           setScope("all");
           setNodes(nodes);

@@ -8,7 +8,7 @@ import NodeForm, {
   type NodeFormValues,
 } from "../components/node.form";
 import ComponentCard from "@/shared/fields/ComponentCard";
-import StoreMembersForm from "../components/store-members.form";
+import NodeMembersForm from "../components/node-members.form";
 import { fetchStoreMembers } from "../account.api";
 import { toMemberFormValues } from "../account.utils";
 
@@ -64,7 +64,7 @@ export default function AddEditNodes() {
         <ComponentCard title={node ? node.displayName : "Add / Edit Node"}>
           <form onSubmit={onSubmit} className="flex flex-col gap-4">
             <NodeForm />
-            <StoreMembersForm />
+            <NodeMembersForm nodeId={nodeId} />
             <div className="card-actions justify-end mt-4">
               <Link to="/node/" className="btn btn-ghost">
                 Cancel
