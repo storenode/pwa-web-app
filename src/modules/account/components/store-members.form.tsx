@@ -30,10 +30,7 @@ const roleDisplayName = (roleKey: string) =>
   ALL_ROLES.find((role) => role.roleKey === roleKey)?.displayName ?? roleKey;
 
 export default function StoreMembersForm() {
-  const { fields, append, remove } = useFieldArray<
-    StoreFormValues,
-    "members"
-  >({
+  const { fields, append, remove } = useFieldArray<StoreFormValues, "members">({
     name: "members",
   });
   const [isAdding, setIsAdding] = useState(false);
@@ -198,11 +195,7 @@ export default function StoreMembersForm() {
             >
               Cancel
             </button>
-            <button
-              type="button"
-              className="btn btn-primary"
-              onClick={handleSave}
-            >
+            <button type="button" className="btn btn-info" onClick={handleSave}>
               Save
             </button>
           </div>

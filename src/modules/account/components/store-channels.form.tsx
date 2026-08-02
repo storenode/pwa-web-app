@@ -32,12 +32,11 @@ const emptyDraft: ChannelDraft = {
 };
 
 export default function StoreChannelsForm() {
-  const { fields, append, remove } = useFieldArray<
-    StoreFormValues,
-    "channels"
-  >({
-    name: "channels",
-  });
+  const { fields, append, remove } = useFieldArray<StoreFormValues, "channels">(
+    {
+      name: "channels",
+    },
+  );
   const [isAdding, setIsAdding] = useState(false);
   const [draft, setDraft] = useState<ChannelDraft>(emptyDraft);
   const [draftErrors, setDraftErrors] = useState<
@@ -208,9 +207,7 @@ export default function StoreChannelsForm() {
               checked={draft.isPrimary}
               onChange={(e) => updateDraft("isPrimary", e.target.checked)}
             />
-            <span className="label-text">
-              Primary channel for this type
-            </span>
+            <span className="label-text">Primary channel for this type</span>
           </label>
 
           <div className="sm:col-span-2 flex items-center justify-end gap-2">
@@ -221,11 +218,7 @@ export default function StoreChannelsForm() {
             >
               Cancel
             </button>
-            <button
-              type="button"
-              className="btn btn-primary"
-              onClick={handleSave}
-            >
+            <button type="button" className="btn btn-info" onClick={handleSave}>
               Save
             </button>
           </div>

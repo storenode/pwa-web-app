@@ -26,15 +26,8 @@
   --color-google-hover: #1e1f20;
 }
 
-html,
 body {
-  height: 100%;
   margin: 0;
-  overflow: hidden;
-}
-
-#root {
-  height: 100%;
 }
 
 .node-tree-table thead tr,
