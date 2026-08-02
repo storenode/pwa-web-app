@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useNodesStore } from "../../../shared/store/nodesStore";
 import { FormProvider, useForm } from "react-hook-form";
@@ -7,6 +8,9 @@ import NodeForm, {
   type NodeFormValues,
 } from "../components/node.form";
 import ComponentCard from "@/shared/fields/ComponentCard";
+import StoreMembersForm from "../components/store-members.form";
+import { fetchStoreMembers } from "../account.api";
+import { toMemberFormValues } from "../account.utils";
 
 export default function AddEditNodes() {
   const { nodeId } = useParams<{ nodeId: string }>();
@@ -22,10 +26,29 @@ export default function AddEditNodes() {
       logoUrl: undefined,
       city: node?.city || "",
       address: node?.address || "",
+      members: node?.members ? toMemberFormValues(node.members) : undefined,
     },
     mode: "onBlur",
     resolver: createResolver(nodeFormSchema),
   });
+
+  useEffect(() => {
+    if (!nodeId) return;
+
+    let cancelled = false;
+    fetchStoreMembers(nodeId)
+      .then((members) => {
+        if (cancelled) return;
+        methods.setValue("members", toMemberFormValues(members));
+      })
+      .catch((err: Error) => {
+        console.error("Failed to fetch node members:", err.message);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [nodeId, methods]);
 
   const onSubmit = methods.handleSubmit((values) => {
     console.log(values);
@@ -39,8 +62,9 @@ export default function AddEditNodes() {
         </Link>
 
         <ComponentCard title={node ? node.displayName : "Add / Edit Node"}>
-          <form onSubmit={onSubmit}>
+          <form onSubmit={onSubmit} className="flex flex-col gap-4">
             <NodeForm />
+            <StoreMembersForm />
             <div className="card-actions justify-end mt-4">
               <Link to="/node/" className="btn btn-ghost">
                 Cancel

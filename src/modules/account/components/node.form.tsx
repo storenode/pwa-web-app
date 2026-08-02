@@ -1,5 +1,6 @@
 import { useFormContext } from "react-hook-form";
 import { schema as s, type Infer } from "@/lib/valibot";
+import { memberSchema } from "./store.form";
 
 export default function NodeForm() {
   const {
@@ -158,5 +159,6 @@ export const nodeFormSchema = s.object({
   ),
   city: s.pipe(s.string(), s.trim(), s.minLength(1, "City is required")),
   address: s.pipe(s.string(), s.trim(), s.minLength(1, "Address is required")),
+  members: s.optional(s.array(memberSchema)),
 });
 export type NodeFormValues = Infer<typeof nodeFormSchema>;

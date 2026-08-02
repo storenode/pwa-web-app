@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useNodesStore } from "../../../shared/store/nodesStore";
 import { FormProvider, useForm } from "react-hook-form";
@@ -5,16 +6,16 @@ import { createResolver } from "@/lib/valibot";
 import StoreForm, {
   CHANNEL_STATUSES,
   CHANNEL_TYPES,
-  STORE_ROLES,
   storeFormSchema,
   type ChannelStatus,
   type ChannelType,
   type StoreFormValues,
-  type StoreRoleKey,
 } from "../components/store.form";
 import StoreMembersForm from "../components/store-members.form";
 import StoreChannelsForm from "../components/store-channels.form";
 import ComponentCard from "@/shared/fields/ComponentCard";
+import { fetchStoreMembers } from "../account.api";
+import { toMemberFormValues } from "../account.utils";
 
 export default function AddEditStores() {
   const { nodeId, storeId } = useParams<{ nodeId: string; storeId: string }>();
@@ -33,26 +34,7 @@ export default function AddEditStores() {
       logoUrl: undefined,
       city: store?.city || "",
       address: store?.address || "",
-      members: store?.members
-        ?.filter(
-          (member): member is typeof member & { roleKey: StoreRoleKey } =>
-            !!member.roleKey &&
-            (STORE_ROLES as readonly { roleKey: string }[]).some(
-              (role) => role.roleKey === member.roleKey,
-            ),
-        )
-        .map((member) => {
-          const [firstName = "", ...rest] = (member.displayName ?? "").split(
-            " ",
-          );
-          return {
-            firstName,
-            lastName: rest.join(" "),
-            displayName: member.displayName ?? "",
-            email: member.email ?? "",
-            roleKey: member.roleKey,
-          };
-        }),
+      members: store?.members ? toMemberFormValues(store.members) : undefined,
       channels: store?.channels
         ?.filter(
           (
@@ -79,6 +61,24 @@ export default function AddEditStores() {
     mode: "onBlur",
     resolver: createResolver(storeFormSchema),
   });
+
+  useEffect(() => {
+    if (!storeId || storeId === "new") return;
+
+    let cancelled = false;
+    fetchStoreMembers(storeId)
+      .then((members) => {
+        if (cancelled) return;
+        methods.setValue("members", toMemberFormValues(members));
+      })
+      .catch((err: Error) => {
+        console.error("Failed to fetch store members:", err.message);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [storeId, methods]);
 
   const onSubmit = methods.handleSubmit((values) => {
     console.log(values);

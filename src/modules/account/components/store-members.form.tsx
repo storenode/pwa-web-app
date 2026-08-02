@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useFieldArray } from "react-hook-form";
 import * as v from "valibot";
 import {
+  ALL_ROLES,
   memberSchema,
   STORE_ROLES,
   type MemberFormValues,
@@ -26,8 +27,7 @@ const emptyDraft: MemberDraft = {
 };
 
 const roleDisplayName = (roleKey: string) =>
-  STORE_ROLES.find((role) => role.roleKey === roleKey)?.displayName ??
-  roleKey;
+  ALL_ROLES.find((role) => role.roleKey === roleKey)?.displayName ?? roleKey;
 
 export default function StoreMembersForm() {
   const { fields, append, remove } = useFieldArray<

@@ -172,6 +172,16 @@ export const STORE_ROLES = [
 ] as const;
 export type StoreRoleKey = (typeof STORE_ROLES)[number]["roleKey"];
 
+// role_definitions rows where role_level = 'platform' (see seed.sql) — shown
+// read-only on brand/platform nodes; not offered when adding a store member.
+export const PLATFORM_ROLES = [
+  { roleKey: "platform_admin", displayName: "Platform Admin" },
+  { roleKey: "platform_manager", displayName: "Platform Manager" },
+  { roleKey: "platform_editor", displayName: "Platform Editor" },
+] as const;
+
+export const ALL_ROLES = [...PLATFORM_ROLES, ...STORE_ROLES];
+
 export const memberSchema = s.object({
   firstName: s.pipe(
     s.string(),
@@ -189,10 +199,11 @@ export const memberSchema = s.object({
     s.minLength(1, "Display name is required"),
   ),
   email: s.pipe(s.string(), s.trim(), s.email("Invalid email")),
-  roleKey: s.picklist(
-    STORE_ROLES.map((role) => role.roleKey),
-    "Role is required",
-  ),
+  // Not restricted to STORE_ROLES here: this schema also backs read-only
+  // display of already-persisted node_members rows, which can carry
+  // platform-tier roles (e.g. on brand/platform nodes). The "Add Member"
+  // form still only offers STORE_ROLES as options via its <select>.
+  roleKey: s.pipe(s.string(), s.trim(), s.minLength(1, "Role is required")),
 });
 export type MemberFormValues = Infer<typeof memberSchema>;
 
