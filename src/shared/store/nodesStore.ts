@@ -73,14 +73,34 @@ const initialState = {
   error: null as string | null,
 };
 
+// Compares two id-bearing lists by sorted id set, ignoring order/object
+// identity — used to skip no-op set() calls when a refetch returns the
+// same rows (e.g. after a silent token refresh), which would otherwise
+// hand consumers a new array reference and trigger spurious re-fetches.
+function sameIds(a: { id: string }[], b: { id: string }[]): boolean {
+  if (a.length !== b.length) return false;
+  const sortedA = a.map((x) => x.id).sort();
+  const sortedB = b.map((x) => x.id).sort();
+  return sortedA.every((id, i) => id === sortedB[i]);
+}
+
 export const useNodesStore = create<NodesState>()((set, get) => ({
   ...initialState,
   isPlatformAdmin: () =>
     get().memberships.some(
       (m: MembershipRecord) => m.role?.roleKey === "platform_admin",
     ),
-  setMemberships: (memberships) => set({ memberships }),
-  setNodes: (nodes) => set({ nodes }),
+  setMemberships: (memberships) => {
+    const current = get().memberships.map((m) => ({ id: m.nodeId }));
+    const next = memberships.map((m) => ({ id: m.nodeId }));
+    if (sameIds(current, next)) return;
+    set({ memberships });
+  },
+  setNodes: (nodes) => {
+    const current = get().nodes;
+    if (sameIds(current, nodes)) return;
+    set({ nodes });
+  },
   setScope: (scope) => set({ scope }),
   setLoading: (isLoading) => set({ isLoading }),
   setError: (error) => set({ error }),

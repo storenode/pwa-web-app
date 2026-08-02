@@ -17,11 +17,22 @@ interface AuthState {
   setLoading: (isLoading: boolean) => void
 }
 
-export const useAuthStore = create<AuthState>()((set) => ({
+export const useAuthStore = create<AuthState>()((set, get) => ({
   session: null,
   member: null,
   isLoading: true,
-  setSession: (session) => set({ session }),
-  setMember: (member) => set({ member }),
+  // Session objects always differ by token/expiry even for "the same"
+  // signed-in user (e.g. a silent TOKEN_REFRESHED) — compare by user id
+  // instead of reference so callers don't push needless re-renders.
+  setSession: (session) => {
+    const current = get().session
+    if ((current?.user.id ?? null) === (session?.user.id ?? null)) return
+    set({ session })
+  },
+  setMember: (member) => {
+    const current = get().member
+    if ((current?.id ?? null) === (member?.id ?? null)) return
+    set({ member })
+  },
   setLoading: (isLoading) => set({ isLoading }),
 }))

@@ -98,7 +98,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      // Supabase's client auto-refreshes the session on tab focus/interval,
+      // firing this event for the same signed-in user. The refreshed token
+      // is already held internally by the client for its own requests, and
+      // nothing in this app reads session.access_token directly, so a
+      // same-user refresh needs no state update (and no member re-sync) —
+      // skipping it here is what stops that cascading into refetches in
+      // NodesProvider/MyStores.
+      if (
+        event === "TOKEN_REFRESHED" &&
+        session?.user.id === useAuthStore.getState().member?.id
+      ) {
+        return;
+      }
+
       setSession(session);
       setMember(toMember(session));
       setLoading(false);
