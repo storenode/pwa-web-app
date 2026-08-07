@@ -1,8 +1,14 @@
+import { useEffect } from "react";
 import { useNodesStore } from "../../../shared/store/nodesStore";
+import { refetchNodes } from "@/shared/providers/NodesProvider";
 import NodesTable from "../components/nodes.table";
 
 export default function BrowseAllNodes() {
   const isPlatformAdmin = useNodesStore((state) => state.isPlatformAdmin());
+
+  useEffect(() => {
+    void refetchNodes();
+  }, []);
 
   return (
     <>

@@ -4,6 +4,7 @@ import PublicLayout from "./public.layout";
 import Home from "./pages/home";
 import AuthCallback from "./pages/AuthCallback";
 import NoNodeAttached from "./pages/NoNodeAttached";
+import PublicStoreView from "./pages/PublicStoreView";
 import ScenarioDetail from "./pages/ScenarioDetail";
 import { scenarios } from "./scenarios/getAllScenarios";
 import { scenarioPages } from "./scenarios/scenarioPages";
@@ -48,6 +49,10 @@ const publicRoutes: RouteObject[] = [
   {
     path: "/public/no-node",
     element: <NoNodeAttached />,
+  },
+  {
+    path: "/store/:storeId",
+    element: <PublicStoreView />,
   },
 ];
 

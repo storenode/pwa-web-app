@@ -1,10 +1,23 @@
 import { useState } from "react";
 import { Link, matchPath } from "react-router-dom";
 import { useNavStore } from "../../store/navStore";
+import { useNodesStore } from "../../store/nodesStore";
 import { LogoLight } from "../../components/LogoLight";
 import { LogoDark } from "../../components/LogoDark";
 
-const NAV_ITEMS = [
+interface NavChild {
+  label: string;
+  path: string;
+  /** Only rendered if the user holds at least one of these role_key values. */
+  roles?: string[];
+}
+
+interface NavItem extends NavChild {
+  icon: React.ReactNode;
+  children?: NavChild[];
+}
+
+const NAV_ITEMS: NavItem[] = [
   {
     label: "Dashboard",
     path: "/dashboard",
@@ -51,6 +64,11 @@ const NAV_ITEMS = [
       {
         label: "Add-Edit Nodes",
         path: "/node/:nodeId",
+        roles: ["platform_admin"],
+      },
+      {
+        label: "Rewards",
+        path: "/node/:nodeId/rewards",
       },
     ],
   },
@@ -69,7 +87,39 @@ function isPathActive(pattern: string, current: string) {
 
 export default function SideNav() {
   const activeLink = useNavStore((state) => state.activeLink);
+  const memberships = useNodesStore((state) => state.memberships);
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({});
+
+  const userRoleKeys = new Set(
+    memberships
+      .map((m) => m.role?.roleKey)
+      .filter((key): key is string => !!key),
+  );
+  const canView = (roles?: string[]) =>
+    !roles || roles.some((role) => userRoleKeys.has(role));
+
+  // Some nav entries (e.g. "Rewards") are node-specific route patterns —
+  // resolve ":nodeId" to the user's own brand (or their first membership,
+  // for non-brand-admin roles) rather than linking to the literal ":nodeId"
+  // segment, which react-router would otherwise treat as the actual param.
+  const primaryNodeId =
+    memberships.find((m) => m.role?.roleKey === "brand_admin")?.nodeId ??
+    memberships[0]?.nodeId;
+
+  const resolveHref = (path: string) =>
+    primaryNodeId ? path.replace(":nodeId", primaryNodeId) : path;
+
+  const canResolve = (path: string) =>
+    !path.includes(":nodeId") || !!primaryNodeId;
+
+  const visibleNavItems = NAV_ITEMS.filter(
+    (item) => canView(item.roles) && canResolve(item.path),
+  ).map((item) => ({
+    ...item,
+    children: item.children?.filter(
+      (child) => canView(child.roles) && canResolve(child.path),
+    ),
+  }));
 
   return (
     <div className="flex min-h-full flex-col items-start bg-base-50 border-r border-base-300 is-drawer-close:w-14 is-drawer-open:w-64">
@@ -107,12 +157,12 @@ export default function SideNav() {
         </a>
       </div>
       <ul className="menu w-full grow">
-        {NAV_ITEMS.map((item) => {
+        {visibleNavItems.map((item) => {
           if (!item.children) {
             return (
               <li key={item.path} className="py-2">
                 <Link
-                  to={item.path}
+                  to={resolveHref(item.path)}
                   className={`is-drawer-close:tooltip is-drawer-close:tooltip-right ${
                     isPathActive(item.path, activeLink) ? "menu-active" : ""
                   }`}
@@ -152,7 +202,7 @@ export default function SideNav() {
                   {item.children.map((child) => (
                     <li key={child.path} className="py-2">
                       <Link
-                        to={child.path}
+                        to={resolveHref(child.path)}
                         className={
                           isPathActive(child.path, activeLink)
                             ? "menu-active"

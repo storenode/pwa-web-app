@@ -73,15 +73,20 @@ const initialState = {
   error: null as string | null,
 };
 
-// Compares two id-bearing lists by sorted id set, ignoring order/object
-// identity — used to skip no-op set() calls when a refetch returns the
-// same rows (e.g. after a silent token refresh), which would otherwise
-// hand consumers a new array reference and trigger spurious re-fetches.
-function sameIds(a: { id: string }[], b: { id: string }[]): boolean {
+// Compares two id-bearing lists by content (sorted by id), ignoring array
+// order/object identity — used to skip no-op set() calls when a refetch
+// returns identical rows (e.g. after a silent token refresh), which would
+// otherwise hand consumers a new array reference and trigger spurious
+// re-fetches. Deliberately a full content compare, not just an id-set
+// compare — a row whose id is unchanged but whose fields were edited (e.g.
+// after saving a node/store) must still be treated as different.
+function sameIds<T extends { id: string }>(a: T[], b: T[]): boolean {
   if (a.length !== b.length) return false;
-  const sortedA = a.map((x) => x.id).sort();
-  const sortedB = b.map((x) => x.id).sort();
-  return sortedA.every((id, i) => id === sortedB[i]);
+  const sortedA = [...a].sort((x, y) => x.id.localeCompare(y.id));
+  const sortedB = [...b].sort((x, y) => x.id.localeCompare(y.id));
+  return sortedA.every(
+    (item, i) => JSON.stringify(item) === JSON.stringify(sortedB[i]),
+  );
 }
 
 export const useNodesStore = create<NodesState>()((set, get) => ({

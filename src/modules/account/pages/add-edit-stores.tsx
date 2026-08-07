@@ -4,11 +4,7 @@ import { useNodesStore } from "../../../shared/store/nodesStore";
 import { FormProvider, useForm } from "react-hook-form";
 import { createResolver } from "@/lib/valibot";
 import StoreForm, {
-  CHANNEL_STATUSES,
-  CHANNEL_TYPES,
   storeFormSchema,
-  type ChannelStatus,
-  type ChannelType,
   type StoreFormValues,
 } from "../components/store.form";
 import StoreMembersForm from "../components/store-members.form";
@@ -16,12 +12,13 @@ import StoreChannelsForm from "../components/store-channels.form";
 import ComponentCard from "@/shared/fields/ComponentCard";
 import {
   createStore,
+  fetchNodeChannels,
   fetchStoreMembers,
   updateStore,
   upsertNodeChannels,
   upsertNodeMembers,
 } from "../account.api";
-import { toMemberFormValues } from "../account.utils";
+import { toChannelFormValues, toMemberFormValues } from "../account.utils";
 
 export default function AddEditStores() {
   const { nodeId, storeId } = useParams<{ nodeId: string; storeId: string }>();
@@ -45,27 +42,8 @@ export default function AddEditStores() {
       address: store?.address || "",
       members: store?.members ? toMemberFormValues(store.members) : undefined,
       channels: store?.channels
-        ?.filter(
-          (
-            channel,
-          ): channel is typeof channel & {
-            channelType: ChannelType;
-            status: ChannelStatus;
-          } =>
-            (CHANNEL_TYPES as readonly string[]).includes(
-              channel.channelType,
-            ) &&
-            !!channel.status &&
-            (CHANNEL_STATUSES as readonly string[]).includes(channel.status),
-        )
-        .map((channel) => ({
-          channelType: channel.channelType,
-          externalId: channel.externalId ?? undefined,
-          url: channel.url ?? "",
-          label: channel.label ?? undefined,
-          isPrimary: channel.isPrimary,
-          status: channel.status,
-        })),
+        ? toChannelFormValues(store.channels)
+        : undefined,
     },
     mode: "onBlur",
     resolver: createResolver(storeFormSchema),
@@ -82,6 +60,15 @@ export default function AddEditStores() {
       })
       .catch((err: Error) => {
         console.error("Failed to fetch store members:", err.message);
+      });
+
+    fetchNodeChannels(storeId)
+      .then((channels) => {
+        if (cancelled) return;
+        methods.setValue("channels", toChannelFormValues(channels));
+      })
+      .catch((err: Error) => {
+        console.error("Failed to fetch store channels:", err.message);
       });
 
     return () => {

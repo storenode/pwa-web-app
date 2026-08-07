@@ -101,16 +101,110 @@ async function fetchChildNodes(parentIds: string[]): Promise<NodeRecord[]> {
   return ((data as unknown as NodeRow[]) ?? []).map(toNodeRecord);
 }
 
+// Guards against an older in-flight fetch overwriting a newer one's
+// result (e.g. session changes, or two refetchNodes() calls overlapping).
+// Each call captures the id current at its start and checks it's still
+// current before every store write.
+let latestRequestId = 0;
+
+/**
+ * Runs the full memberships/nodes resolution for a member id and pushes the
+ * result into nodesStore. Shared by the login-time effect below and
+ * refetchNodes() (exported for on-demand refreshes, e.g. after a
+ * node/store save, so a list page shows the latest data without requiring
+ * a full page reload).
+ *
+ * `silent` skips the isLoading toggle: ProtectedRoute renders a spinner
+ * instead of <Outlet/> while nodesStore.isLoading is true, so a page-
+ * triggered background refetch must NOT flip it — doing so unmounts the
+ * very page that called refetchNodes(), which re-mounts and calls it
+ * again once loading flips back, looping forever. Only the initial
+ * login-time load (where showing a spinner is correct) uses isLoading.
+ */
+async function loadNodesForMember(
+  memberId: string,
+  { silent = false }: { silent?: boolean } = {},
+): Promise<void> {
+  const requestId = ++latestRequestId;
+  const isStale = () => requestId !== latestRequestId;
+
+  const { setMemberships, setNodes, setScope, setLoading, setError } =
+    useNodesStore.getState();
+
+  if (!silent) setLoading(true);
+  setError(null);
+
+  try {
+    const memberships = await fetchOwnMemberships(memberId);
+    if (isStale()) return;
+    setMemberships(memberships);
+
+    // Only platform_admin gets system-wide visibility. Other
+    // platform-tier roles (platform_manager, platform_editor) are
+    // scoped to whichever nodes they hold a node_members row for —
+    // e.g. an editor or accountant assigned to a handful of stores —
+    // same as any store-tier role.
+    const isPlatformAdmin = memberships.some(
+      (m) => m.role?.roleKey === "platform_admin",
+    );
+
+    if (isPlatformAdmin) {
+      const nodes = await fetchAllNodes();
+      if (isStale()) return;
+      setScope("all");
+      setNodes(nodes);
+      return;
+    }
+
+    // brand_admin cascades to that brand's stores: fetch every node
+    // whose parent_id is one of their brand_admin nodes, and merge it
+    // with their own membership nodes (still "own" scope, not
+    // system-wide — just their brand(s) plus descendants).
+    const brandAdminNodeIds = memberships
+      .filter((m) => m.role?.roleKey === "brand_admin")
+      .map((m) => m.nodeId);
+
+    if (brandAdminNodeIds.length > 0) {
+      const childNodes = await fetchChildNodes(brandAdminNodeIds);
+      if (isStale()) return;
+
+      const merged = new Map<string, NodeRecord>();
+      for (const n of memberships.map((m) => m.node)) merged.set(n.id, n);
+      for (const n of childNodes) merged.set(n.id, n);
+
+      setScope("own");
+      setNodes(Array.from(merged.values()));
+      return;
+    }
+
+    setScope("own");
+    setNodes(memberships.map((m) => m.node));
+  } catch (err) {
+    if (isStale()) return;
+    console.error("Failed to fetch nodes:", (err as Error).message);
+    setError((err as Error).message);
+  } finally {
+    if (!silent && !isStale()) setLoading(false);
+  }
+}
+
+/**
+ * Re-runs the memberships/nodes resolution for the currently signed-in
+ * user. Call this after a mutation (e.g. saving a node/store) or on
+ * mounting a list page, so it reflects the latest data instead of the
+ * snapshot fetched at login. No-ops if nobody is signed in. Runs silently
+ * (no isLoading toggle) — see loadNodesForMember's `silent` doc comment.
+ */
+export async function refetchNodes(): Promise<void> {
+  const member = useAuthStore.getState().member;
+  if (!member) return;
+  await loadNodesForMember(member.id, { silent: true });
+}
+
 export function NodesProvider({ children }: { children: ReactNode }) {
   const session = useAuthStore((state) => state.session);
   const member = useAuthStore((state) => state.member);
   const authLoading = useAuthStore((state) => state.isLoading);
-
-  const setMemberships = useNodesStore((state) => state.setMemberships);
-  const setNodes = useNodesStore((state) => state.setNodes);
-  const setScope = useNodesStore((state) => state.setScope);
-  const setLoading = useNodesStore((state) => state.setLoading);
-  const setError = useNodesStore((state) => state.setError);
   const reset = useNodesStore((state) => state.reset);
 
   useEffect(() => {
@@ -121,80 +215,8 @@ export function NodesProvider({ children }: { children: ReactNode }) {
       return;
     }
 
-    let cancelled = false;
-    setLoading(true);
-    setError(null);
-
-    fetchOwnMemberships(member.id)
-      .then(async (memberships) => {
-        if (cancelled) return;
-        setMemberships(memberships);
-
-        // Only platform_admin gets system-wide visibility. Other
-        // platform-tier roles (platform_manager, platform_editor) are
-        // scoped to whichever nodes they hold a node_members row for —
-        // e.g. an editor or accountant assigned to a handful of stores —
-        // same as any store-tier role.
-        const isPlatformAdmin = memberships.some(
-          (m) => m.role?.roleKey === "platform_admin",
-        );
-
-        if (isPlatformAdmin) {
-          const nodes = await fetchAllNodes();
-          if (cancelled) return;
-          setScope("all");
-          setNodes(nodes);
-          return;
-        }
-
-        // brand_admin cascades to that brand's stores: fetch every node
-        // whose parent_id is one of their brand_admin nodes, and merge it
-        // with their own membership nodes (still "own" scope, not
-        // system-wide — just their brand(s) plus descendants).
-        const brandAdminNodeIds = memberships
-          .filter((m) => m.role?.roleKey === "brand_admin")
-          .map((m) => m.nodeId);
-
-        if (brandAdminNodeIds.length > 0) {
-          const childNodes = await fetchChildNodes(brandAdminNodeIds);
-          if (cancelled) return;
-
-          const merged = new Map<string, NodeRecord>();
-          for (const n of memberships.map((m) => m.node)) merged.set(n.id, n);
-          for (const n of childNodes) merged.set(n.id, n);
-
-          setScope("own");
-          setNodes(Array.from(merged.values()));
-          return;
-        }
-
-        setScope("own");
-        setNodes(memberships.map((m) => m.node));
-      })
-      .catch((err: Error) => {
-        if (cancelled) return;
-        console.error("Failed to fetch nodes:", err.message);
-        setError(err.message);
-      })
-      .finally(() => {
-        if (cancelled) return;
-        setLoading(false);
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [
-    session,
-    member,
-    authLoading,
-    setMemberships,
-    setNodes,
-    setScope,
-    setLoading,
-    setError,
-    reset,
-  ]);
+    void loadNodesForMember(member.id);
+  }, [session, member, authLoading, reset]);
 
   return <>{children}</>;
 }

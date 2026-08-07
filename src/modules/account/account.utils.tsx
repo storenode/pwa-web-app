@@ -1,6 +1,17 @@
 import { type NodeTreeRow } from "@/modules/account/account.types";
-import type { NodeMemberRecord, NodeRecord } from "@/shared/store/nodesStore";
-import type { MemberFormValues } from "@/modules/account/components/store.form";
+import type {
+  NodeChannelRecord,
+  NodeMemberRecord,
+  NodeRecord,
+} from "@/shared/store/nodesStore";
+import {
+  CHANNEL_STATUSES,
+  CHANNEL_TYPES,
+  type ChannelFormValues,
+  type ChannelStatus,
+  type ChannelType,
+  type MemberFormValues,
+} from "@/modules/account/components/store.form";
 
 // Maps already-persisted node_members rows for display/prefill. Not
 // restricted to STORE_ROLES: a node (e.g. a brand or the platform node)
@@ -23,6 +34,35 @@ export function toMemberFormValues(
         roleKey: member.roleKey,
       };
     });
+}
+
+// Maps already-persisted node_channels rows for prefilling the edit form.
+// channelType/status are free-text on the record but constrained to
+// picklists in the form schema, so rows with an unrecognized/missing value
+// are dropped rather than passed through as an invalid form value.
+export function toChannelFormValues(
+  channels: NodeChannelRecord[],
+): ChannelFormValues[] {
+  return channels
+    .filter(
+      (
+        channel,
+      ): channel is typeof channel & {
+        channelType: ChannelType;
+        status: ChannelStatus;
+      } =>
+        (CHANNEL_TYPES as readonly string[]).includes(channel.channelType) &&
+        !!channel.status &&
+        (CHANNEL_STATUSES as readonly string[]).includes(channel.status),
+    )
+    .map((channel) => ({
+      channelType: channel.channelType,
+      externalId: channel.externalId ?? undefined,
+      url: channel.url ?? "",
+      label: channel.label ?? undefined,
+      isPrimary: channel.isPrimary,
+      status: channel.status,
+    }));
 }
 
 export function buildTree(nodes: NodeRecord[]): NodeTreeRow[] {

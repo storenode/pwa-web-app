@@ -1,31 +1,32 @@
 import type { ReactNode } from "react";
 
 // Props for Table
-interface TableProps {
+interface TableProps extends React.HTMLAttributes<HTMLTableElement> {
   children: ReactNode; // Table content (thead, tbody, etc.)
   className?: string; // Optional className for styling
 }
 
 // Props for TableHeader
-interface TableHeaderProps {
+interface TableHeaderProps extends React.HTMLAttributes<HTMLTableSectionElement> {
   children: ReactNode; // Header row(s)
   className?: string; // Optional className for styling
 }
 
 // Props for TableBody
-interface TableBodyProps {
+interface TableBodyProps extends React.HTMLAttributes<HTMLTableSectionElement> {
   children: ReactNode; // Body row(s)
   className?: string; // Optional className for styling
 }
 
 // Props for TableRow
-interface TableRowProps {
+interface TableRowProps extends React.HTMLAttributes<HTMLTableRowElement> {
   children: ReactNode; // Cells (th or td)
   className?: string; // Optional className for styling
 }
 
 // Props for TableCell
-interface TableCellProps {
+interface TableCellProps
+  extends React.TdHTMLAttributes<HTMLTableCellElement> {
   children: ReactNode; // Cell content
   isHeader?: boolean; // If true, renders as <th>, otherwise <td>
   className?: string; // Optional className for styling
@@ -47,8 +48,16 @@ const TableBody: React.FC<TableBodyProps> = ({ children, className }) => {
 };
 
 // TableRow Component
-const TableRow: React.FC<TableRowProps> = ({ children, className }) => {
-  return <tr className={className}>{children}</tr>;
+// Alternates row background (odd/even) and adds top/bottom borders, both using
+// daisyUI's theme-aware base-100/200/300 colors so they adapt to light/dark.
+const TableRow: React.FC<TableRowProps> = ({ children, className = "" }) => {
+  return (
+    <tr
+      className={`border-t border-b border-base-300 first:border-t-0 last:border-b-0 odd:bg-base-100 even:bg-base-200 ${className}`}
+    >
+      {children}
+    </tr>
+  );
 };
 
 // TableCell Component
@@ -56,9 +65,14 @@ const TableCell: React.FC<TableCellProps> = ({
   children,
   isHeader = false,
   className,
+  ...rest
 }) => {
   const CellTag = isHeader ? "th" : "td";
-  return <CellTag className={` ${className}`}>{children}</CellTag>;
+  return (
+    <CellTag className={` ${className}`} {...rest}>
+      {children}
+    </CellTag>
+  );
 };
 
 export { Table, TableHeader, TableBody, TableRow, TableCell };
