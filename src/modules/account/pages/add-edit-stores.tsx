@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useSecureParams } from "@/shared/hooks/useSecureParams";
 import { useNodesStore } from "../../../shared/store/nodesStore";
 import { FormProvider, useForm } from "react-hook-form";
 import { createResolver } from "@/lib/valibot";
@@ -21,7 +22,10 @@ import {
 import { toChannelFormValues, toMemberFormValues } from "../account.utils";
 
 export default function AddEditStores() {
-  const { nodeId, storeId } = useParams<{ nodeId: string; storeId: string }>();
+  const { nodeId, storeId } = useSecureParams<{
+    nodeId: string;
+    storeId: string;
+  }>();
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);

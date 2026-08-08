@@ -18,6 +18,7 @@ import {
 } from "@/shared/fields/ComponentTable";
 import { type NodeTreeRow } from "@/modules/account/account.types";
 import { useNodesStore } from "@/shared/store/nodesStore";
+import { routePaths } from "@/shared/utils/routePaths";
 import { buildTree } from "../account.utils";
 
 export default function NodesTable() {
@@ -105,7 +106,7 @@ export default function NodesTable() {
               >
                 <li>
                   <Link
-                    to={`/node/${row.original.id}/store/new`}
+                    to={routePaths.newStore(row.original.id)}
                     className="rounded-md font-medium text-base-content hover:bg-base-200 active:!bg-primary active:!text-primary-content"
                   >
                     Add Store
@@ -117,8 +118,8 @@ export default function NodesTable() {
           <Link
             to={
               row.original.parentId
-                ? `/node/${row.original.parentId}/store/${row.original.id}`
-                : `/node/${row.original.id}`
+                ? routePaths.store(row.original.parentId, row.original.id)
+                : routePaths.node(row.original.id)
             }
             className="link link-hover font-medium text-primary cursor-pointer"
           >

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, matchPath } from "react-router-dom";
 import { useNavStore } from "../../store/navStore";
 import { useNodesStore } from "../../store/nodesStore";
+import { idCodec } from "../../store/idCodecStore";
 import { LogoLight } from "../../components/LogoLight";
 import { LogoDark } from "../../components/LogoDark";
 
@@ -107,7 +108,9 @@ export default function SideNav() {
     memberships[0]?.nodeId;
 
   const resolveHref = (path: string) =>
-    primaryNodeId ? path.replace(":nodeId", primaryNodeId) : path;
+    primaryNodeId
+      ? path.replace(":nodeId", idCodec.encodeId(primaryNodeId))
+      : path;
 
   const canResolve = (path: string) =>
     !path.includes(":nodeId") || !!primaryNodeId;

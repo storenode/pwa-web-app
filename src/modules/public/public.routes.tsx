@@ -4,7 +4,7 @@ import PublicLayout from "./public.layout";
 import Home from "./pages/home";
 import AuthCallback from "./pages/AuthCallback";
 import NoNodeAttached from "./pages/NoNodeAttached";
-import PublicStoreView from "./pages/PublicStoreView";
+import PublicStoreView from "@/modules/rewards/pages/PublicStoreView";
 import ScenarioDetail from "./pages/ScenarioDetail";
 import { scenarios } from "./scenarios/getAllScenarios";
 import { scenarioPages } from "./scenarios/scenarioPages";

@@ -4,7 +4,7 @@ import DashboardLayout from "../../shared/layouts/DashboardLayout";
 import BrowseAllNodes from "./pages/nodes";
 import AddEditNodes from "./pages/add-edit-nodes";
 import AddEditStores from "./pages/add-edit-stores";
-import NodeRewards from "./pages/node-rewards";
+import NodeRewards from "@/modules/rewards/pages/node-rewards";
 
 const accountRoutes: RouteObject[] = [
   {

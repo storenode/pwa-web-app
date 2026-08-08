@@ -1,15 +1,24 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { QRCodeSVG } from "qrcode.react";
 import {
   fetchChildStores,
   fetchNodeChannels,
+} from "@/modules/account/account.api";
+import {
   fetchNodeRewards,
+  fetchRewardRedemptions,
   markRewardClaimed,
+  reviewRewardRedemption,
   type NodeRewardRecord,
-} from "../account.api";
+  type RewardRedemptionRecord,
+} from "../rewards.api";
 import type { NodeRecord } from "@/shared/store/nodesStore";
 import { useAuthStore } from "@/shared/store/authStore";
+import { useSecureParams } from "@/shared/hooks/useSecureParams";
+import { routePaths } from "@/shared/utils/routePaths";
+import { CHANNEL_TYPE_LABELS } from "@/modules/account/components/store.form";
+import ComponentCard from "@/shared/fields/ComponentCard";
 import {
   Table,
   TableBody,
@@ -25,7 +34,7 @@ interface StoreQrCard {
 }
 
 export default function NodeRewards() {
-  const { nodeId } = useParams<{ nodeId: string }>();
+  const { nodeId } = useSecureParams<{ nodeId: string }>();
   const member = useAuthStore((state) => state.member);
   const [cards, setCards] = useState<StoreQrCard[]>([]);
   const [qrCodeSlideIndex, setQrCodeSlideIndex] = useState(0);
@@ -33,6 +42,20 @@ export default function NodeRewards() {
     new Map(),
   );
   const [rewards, setRewards] = useState<NodeRewardRecord[]>([]);
+  const [redemptions, setRedemptions] = useState<RewardRedemptionRecord[]>(
+    [],
+  );
+  const [childStoreIds, setChildStoreIds] = useState<string[]>([]);
+  const [reviewingId, setReviewingId] = useState<string | null>(null);
+
+  const refreshRewardsAndRedemptions = async (nodeIds: string[]) => {
+    const [rewardRows, redemptionRows] = await Promise.all([
+      fetchNodeRewards(nodeIds),
+      fetchRewardRedemptions(nodeIds),
+    ]);
+    setRewards(rewardRows);
+    setRedemptions(redemptionRows);
+  };
 
   useEffect(() => {
     if (!nodeId) return;
@@ -59,11 +82,9 @@ export default function NodeRewards() {
           ),
         );
 
-        const rewardRows = await fetchNodeRewards(
-          childStores.map((store) => store.id),
-        );
-        if (cancelled) return;
-        setRewards(rewardRows);
+        const nodeIds = childStores.map((store) => store.id);
+        setChildStoreIds(nodeIds);
+        await refreshRewardsAndRedemptions(nodeIds);
       })
       .catch((err: Error) => {
         console.error("Failed to fetch rewards data:", err.message);
@@ -73,6 +94,21 @@ export default function NodeRewards() {
       cancelled = true;
     };
   }, [nodeId]);
+
+  const handleReview = async (redemptionId: string, approve: boolean) => {
+    setReviewingId(redemptionId);
+    try {
+      await reviewRewardRedemption(redemptionId, approve);
+      await refreshRewardsAndRedemptions(childStoreIds);
+    } catch (err) {
+      console.error(
+        "Failed to review reward redemption:",
+        (err as Error).message,
+      );
+    } finally {
+      setReviewingId(null);
+    }
+  };
 
   const handleMarkClaimed = async (rewardId: string) => {
     if (!member) return;
@@ -125,7 +161,7 @@ export default function NodeRewards() {
                       >
                         <div className="card-body items-center text-center">
                           <QRCodeSVG
-                            value={`${window.location.origin}/store/${store.id}`}
+                            value={`${window.location.origin}${routePaths.publicStore(store.id)}`}
                             size={160}
                           />
                           <h2 className="card-title">
@@ -145,6 +181,15 @@ export default function NodeRewards() {
                               Phone
                             </TableCell>
                             <TableCell isHeader className="text-start">
+                              Type
+                            </TableCell>
+                            <TableCell isHeader className="text-start">
+                              Channel
+                            </TableCell>
+                            <TableCell isHeader className="text-start">
+                              Date of Birth
+                            </TableCell>
+                            <TableCell isHeader className="text-start">
                               Points
                             </TableCell>
                             <TableCell isHeader className="text-start">
@@ -158,7 +203,7 @@ export default function NodeRewards() {
                         <TableBody>
                           {storeRewards.length === 0 ? (
                             <TableRow>
-                              <TableCell colSpan={5} className="text-center">
+                              <TableCell colSpan={8} className="text-center">
                                 <div className="w-full flex justify-center items-center gap-2">
                                   <span className="text-sm text-base-content/60">
                                     No rewards yet for this store.
@@ -175,6 +220,25 @@ export default function NodeRewards() {
                                       reward.nodeId}
                                   </TableCell>
                                   <TableCell>{reward.phone}</TableCell>
+                                  <TableCell>
+                                    <span
+                                      className={`badge badge-sm ${
+                                        reward.rewardType === "birthday"
+                                          ? "badge-secondary"
+                                          : "badge-outline"
+                                      }`}
+                                    >
+                                      {reward.rewardType}
+                                    </span>
+                                  </TableCell>
+                                  <TableCell>
+                                    {reward.channelType
+                                      ? CHANNEL_TYPE_LABELS[reward.channelType]
+                                      : "—"}
+                                  </TableCell>
+                                  <TableCell>
+                                    {reward.dateOfBirth ?? "—"}
+                                  </TableCell>
                                   <TableCell>{reward.points}</TableCell>
                                   <TableCell>
                                     <span
@@ -211,7 +275,7 @@ export default function NodeRewards() {
                 ) : (
                   <Link
                     key={store.id}
-                    to={`/node/${nodeId}/store/${store.id}`}
+                    to={nodeId ? routePaths.store(nodeId, store.id) : "#"}
                     className="join-item card border-0 bg-slate-200 text-slate-800 hover:brightness-110 snap-start"
                   >
                     <div className="card-body items-center text-center">
@@ -227,6 +291,100 @@ export default function NodeRewards() {
           })()
         )}
       </NavigableCard>
+
+      <ComponentCard
+        title="Redemption Requests"
+        desc="Customer-submitted bill claims — approve to apply the discount and mark the underlying points claimed, or reject to release them."
+      >
+        {redemptions.length === 0 ? (
+          <p className="text-sm text-base-content/60">
+            No redemption requests yet.
+          </p>
+        ) : (
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableCell isHeader className="text-start">
+                  Store
+                </TableCell>
+                <TableCell isHeader className="text-start">
+                  Phone
+                </TableCell>
+                <TableCell isHeader className="text-start">
+                  Bill #
+                </TableCell>
+                <TableCell isHeader className="text-start">
+                  Bill Amount
+                </TableCell>
+                <TableCell isHeader className="text-start">
+                  Points Applied
+                </TableCell>
+                <TableCell isHeader className="text-start">
+                  Discount
+                </TableCell>
+                <TableCell isHeader className="text-start">
+                  Status
+                </TableCell>
+                <TableCell isHeader className="text-start">
+                  Actions
+                </TableCell>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {redemptions.map((redemption) => (
+                <TableRow key={redemption.id}>
+                  <TableCell>
+                    {storeNameById.get(redemption.nodeId) ??
+                      redemption.nodeId}
+                  </TableCell>
+                  <TableCell>{redemption.phone}</TableCell>
+                  <TableCell>{redemption.billNumber}</TableCell>
+                  <TableCell>₹{redemption.billAmount}</TableCell>
+                  <TableCell>{redemption.pointsApplied}</TableCell>
+                  <TableCell>₹{redemption.discountAmount}</TableCell>
+                  <TableCell>
+                    <span
+                      className={`badge badge-sm ${
+                        redemption.status === "approved"
+                          ? "badge-success"
+                          : redemption.status === "rejected"
+                            ? "badge-error"
+                            : "badge-ghost"
+                      }`}
+                    >
+                      {redemption.status}
+                    </span>
+                  </TableCell>
+                  <TableCell>
+                    {redemption.status === "requested" && (
+                      <div className="flex gap-2">
+                        <button
+                          type="button"
+                          className="btn btn-sm btn-success"
+                          disabled={reviewingId === redemption.id}
+                          onClick={() => void handleReview(redemption.id, true)}
+                        >
+                          Approve
+                        </button>
+                        <button
+                          type="button"
+                          className="btn btn-sm btn-error"
+                          disabled={reviewingId === redemption.id}
+                          onClick={() =>
+                            void handleReview(redemption.id, false)
+                          }
+                        >
+                          Reject
+                        </button>
+                      </div>
+                    )}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        )}
+      </ComponentCard>
     </div>
   );
 }
