@@ -8,8 +8,7 @@ import {
   requestRewardRedemption,
 } from "../rewards.api";
 import type { PublicStoreInfo, RewardRedemptionRecord } from "../rewards.api";
-
-const INDIA_PHONE_PATTERN = /^[6-9]\d{9}$/;
+import { INDIA_PHONE_PATTERN } from "@/shared/utils/phone";
 
 /**
  * All the state + handlers behind the public /store/:storeId page: store

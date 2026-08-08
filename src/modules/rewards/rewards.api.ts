@@ -341,3 +341,56 @@ export async function reviewRewardRedemption(
 
   if (error) throw error;
 }
+
+export interface RewardsByPhoneEntry {
+  nodeId: string;
+  storeName: string;
+  rewardType: "phone" | "birthday";
+  channelType: ChannelType | null;
+  points: number;
+  status: "unclaimed" | "requested" | "claimed";
+  createdAt: string;
+}
+
+interface RewardsByPhoneRow {
+  node_id: string;
+  store_name: string;
+  reward_type: "phone" | "birthday";
+  channel_type: string | null;
+  points: number;
+  status: "unclaimed" | "requested" | "claimed";
+  created_at: string;
+}
+
+/**
+ * Public (anon-callable): every store where this phone number has any
+ * reward activity, via the find_rewards_by_phone security-definer RPC —
+ * a phone can have rewards at several unrelated stores, so this is a
+ * cross-store search rather than a single-store lookup. Used by the
+ * "Find your rewards" homepage flow; the caller groups rows by nodeId to
+ * build a per-store view.
+ */
+export async function fetchRewardsByPhone(
+  phone: string,
+): Promise<RewardsByPhoneEntry[]> {
+  const { data, error } = await supabase.rpc("find_rewards_by_phone", {
+    p_phone: phone,
+  });
+
+  if (error) throw error;
+
+  const rows = (data as unknown as RewardsByPhoneRow[] | null) ?? [];
+  return rows.map((row) => ({
+    nodeId: row.node_id,
+    storeName: row.store_name,
+    rewardType: row.reward_type,
+    channelType: (CHANNEL_TYPES as readonly string[]).includes(
+      row.channel_type ?? "",
+    )
+      ? (row.channel_type as ChannelType)
+      : null,
+    points: row.points,
+    status: row.status,
+    createdAt: row.created_at,
+  }));
+}

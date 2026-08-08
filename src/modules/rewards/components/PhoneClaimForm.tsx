@@ -1,4 +1,4 @@
-const INDIA_PHONE_PATTERN = /^[6-9]\d{9}$/;
+import { INDIA_PHONE_PATTERN } from "@/shared/utils/phone";
 
 interface PhoneClaimFormProps {
   phone: string;

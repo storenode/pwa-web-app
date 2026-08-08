@@ -42,9 +42,8 @@ export default function NodeRewards() {
     new Map(),
   );
   const [rewards, setRewards] = useState<NodeRewardRecord[]>([]);
-  const [redemptions, setRedemptions] = useState<RewardRedemptionRecord[]>(
-    [],
-  );
+  const [rewardsType, setRewardsType] = useState<string>("unclaimed");
+  const [redemptions, setRedemptions] = useState<RewardRedemptionRecord[]>([]);
   const [childStoreIds, setChildStoreIds] = useState<string[]>([]);
   const [reviewingId, setReviewingId] = useState<string | null>(null);
 
@@ -153,7 +152,10 @@ export default function NodeRewards() {
           (() => {
             const { store, hasChannels } = cards[qrCodeSlideIndex];
             const storeRewards = rewards.filter(
-              (reward) => reward.nodeId === store.id,
+              (reward) =>
+                reward.nodeId === store.id &&
+                reward.status ===
+                  (rewardsType === "all" ? reward.status : rewardsType),
             );
             return (
               <>
@@ -173,6 +175,21 @@ export default function NodeRewards() {
                             {store.displayName ?? store.name}
                           </h2>
                         </div>
+                      </div>
+                    </div>
+                    <div className="w-full px-2 py-2 flex justify-end">
+                      <div className="join">
+                        {["unclaimed", "claimed", "all"].map((type) => (
+                          <label
+                            key={type}
+                            className={`join-item btn btn-xs ${
+                              rewardsType === type ? "btn-secondary" : ""
+                            }`}
+                            onClick={() => setRewardsType(type)}
+                          >
+                            {type.charAt(0).toUpperCase() + type.slice(1)}
+                          </label>
+                        ))}
                       </div>
                     </div>
                     <div className="flex">
@@ -363,8 +380,7 @@ export default function NodeRewards() {
               {storeRedemptions.map((redemption) => (
                 <TableRow key={redemption.id}>
                   <TableCell>
-                    {storeNameById.get(redemption.nodeId) ??
-                      redemption.nodeId}
+                    {storeNameById.get(redemption.nodeId) ?? redemption.nodeId}
                   </TableCell>
                   <TableCell>{redemption.phone}</TableCell>
                   <TableCell>{redemption.billNumber}</TableCell>

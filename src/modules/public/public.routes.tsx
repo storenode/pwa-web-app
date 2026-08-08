@@ -5,6 +5,7 @@ import Home from "./pages/home";
 import AuthCallback from "./pages/AuthCallback";
 import NoNodeAttached from "./pages/NoNodeAttached";
 import PublicStoreView from "@/modules/rewards/pages/PublicStoreView";
+import FindRewards from "@/modules/rewards/pages/FindRewards";
 import ScenarioDetail from "./pages/ScenarioDetail";
 import { scenarios } from "./scenarios/getAllScenarios";
 import { scenarioPages } from "./scenarios/scenarioPages";
@@ -53,6 +54,10 @@ const publicRoutes: RouteObject[] = [
   {
     path: "/store/:storeId",
     element: <PublicStoreView />,
+  },
+  {
+    path: "/rewards/find",
+    element: <FindRewards />,
   },
 ];
 

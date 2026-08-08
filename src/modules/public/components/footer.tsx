@@ -18,8 +18,14 @@ export default function PublicFooterView() {
             మీ షాప్ కోసం, మీ భాషలో.
           </p>
 
-          <div className="flex flex-col justify-center mt-4 sm:flex-row sm:items-center sm:justify-center">
+          <div className="flex flex-col justify-center items-center gap-3 mt-4 sm:flex-row sm:items-center sm:justify-center">
             <GoogleLoginButton />
+            <a
+              href="/public/home#find-your-rewards"
+              className="text-sm font-medium text-base-content/70 underline underline-offset-4 hover:text-base-content transition-colors"
+            >
+              Find Your Rewards
+            </a>
           </div>
         </div>
 

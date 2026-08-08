@@ -32,9 +32,13 @@ interface TableCellProps
   className?: string; // Optional className for styling
 }
 
-// Table Component
-const Table: React.FC<TableProps> = ({ children, className }) => {
-  return <table className={`min-w-full  ${className}`}>{children}</table>;
+// Table Component — daisyUI's table/table-zebra classes, scrollable on overflow
+const Table: React.FC<TableProps> = ({ children, className = "" }) => {
+  return (
+    <div className="overflow-x-auto w-full">
+      <table className={`table table-zebra w-full ${className}`}>{children}</table>
+    </div>
+  );
 };
 
 // TableHeader Component
@@ -47,17 +51,9 @@ const TableBody: React.FC<TableBodyProps> = ({ children, className }) => {
   return <tbody className={className}>{children}</tbody>;
 };
 
-// TableRow Component
-// Alternates row background (odd/even) and adds top/bottom borders, both using
-// daisyUI's theme-aware base-100/200/300 colors so they adapt to light/dark.
-const TableRow: React.FC<TableRowProps> = ({ children, className = "" }) => {
-  return (
-    <tr
-      className={`border-t border-b border-base-300 first:border-t-0 last:border-b-0 odd:bg-base-100 even:bg-base-200 ${className}`}
-    >
-      {children}
-    </tr>
-  );
+// TableRow Component — zebra striping/borders now come from daisyUI's table-zebra on <table>
+const TableRow: React.FC<TableRowProps> = ({ children, className }) => {
+  return <tr className={className}>{children}</tr>;
 };
 
 // TableCell Component
@@ -69,7 +65,7 @@ const TableCell: React.FC<TableCellProps> = ({
 }) => {
   const CellTag = isHeader ? "th" : "td";
   return (
-    <CellTag className={` ${className}`} {...rest}>
+    <CellTag className={className} {...rest}>
       {children}
     </CellTag>
   );

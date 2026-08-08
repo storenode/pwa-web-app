@@ -3,10 +3,18 @@ import { LogoLight } from "../../../shared/components/LogoLight";
 import ThemeToggle from "../../../shared/components/ThemeToggle";
 import { useScrolled } from "../../../shared/hooks/useScrolled";
 
-export default function PublicHeaderView() {
-  const scrolled = useScrolled(
+interface PublicHeaderViewProps {
+  /** Pages without a tall hero photo (nothing for the header to sit transparently over) should force the solid/scrolled look from the start instead of starting transparent. */
+  forceSolid?: boolean;
+}
+
+export default function PublicHeaderView({
+  forceSolid = false,
+}: PublicHeaderViewProps = {}) {
+  const scrolledState = useScrolled(
     typeof window === "undefined" ? 500 : window.innerHeight * 0.7,
   );
+  const scrolled = forceSolid || scrolledState;
 
   return (
     <header

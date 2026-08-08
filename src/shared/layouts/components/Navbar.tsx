@@ -4,6 +4,7 @@ import { supabase } from "../../../lib/supabase";
 import ThemeToggle from "../../components/ThemeToggle";
 import { StoreNodeLogo } from "../../components/StoreNodeLogo";
 import { useAuthStore } from "../../store/authStore";
+import PageRefreshButton from "@/shared/components/PageRefreshButton";
 
 export default function Navbar() {
   const navigate = useNavigate();
@@ -48,6 +49,7 @@ export default function Navbar() {
         </div>
         <div className="flex items-center gap-2 sm:gap-4 px-2 sm:px-4 shrink-0">
           <ThemeToggle />
+          <PageRefreshButton />
           <div className="dropdown dropdown-end">
             <div
               tabIndex={0}

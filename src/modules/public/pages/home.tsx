@@ -1,9 +1,161 @@
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { SocialIconsPattern } from "../../../shared/components/backgrounds/SocialIconsPattern";
 import { ThreadLines } from "../../../shared/components/backgrounds/ThreadLines";
+import { RewardsPattern } from "../../../shared/components/backgrounds/RewardsPattern";
 import StoreNodeIllustration from "../../../shared/components/StoreNodeIllustration";
 import GoogleLoginButton from "../../../shared/fields/GoogleLogin.Button";
 import { scenarios } from "../scenarios/getAllScenarios";
+import { INDIA_PHONE_PATTERN } from "@/shared/utils/phone";
+import { routePaths } from "@/shared/utils/routePaths";
+
+const REWARDS_SECTION_ID = "find-your-rewards";
+
+function scrollToRewardsSection() {
+  document
+    .getElementById(REWARDS_SECTION_ID)
+    ?.scrollIntoView({ behavior: "smooth" });
+}
+
+const rewardsQuotes = [
+  {
+    quote:
+      "“I didn't expect a discount just for leaving a review — I keep coming back to check my points.”",
+    attribution: "A customer, somewhere on a StoreNode QR board",
+  },
+  {
+    quote:
+      "“Every scan is a story: a review left, a point earned, a reason to return.”",
+    attribution: "The idea behind StoreNode Rewards",
+  },
+  {
+    quote:
+      "“We used to lose customers to memory. Now their phone number remembers them.”",
+    attribution: "A store owner, on switching to QR rewards",
+  },
+  {
+    quote:
+      "“Ten points here, ten points there — I didn't notice it add up until I redeemed ₹80 off my bill.”",
+    attribution: "A customer, redeeming at the counter",
+  },
+  {
+    quote:
+      "“No app to install, no card to carry. Just the number I already use to call my mother.”",
+    attribution: "On why phone-number rewards just work",
+  },
+  {
+    quote:
+      "“A birthday bonus once a year feels small — until it's the reason she remembers where she shops.”",
+    attribution: "A store owner, on the birthday reward",
+  },
+];
+
+/**
+ * Rotates through the rewards quotes one at a time, auto-advancing on a
+ * timer with a fill-progress ring per dot (not just a static dot) so the
+ * countdown itself is visible, and pauses on hover so a reader mid-quote
+ * isn't cut off. Clicking a dot jumps straight there and resets the timer.
+ */
+function RotatingQuote({
+  quotes,
+  intervalMs = 6000,
+}: {
+  quotes: typeof rewardsQuotes;
+  intervalMs?: number;
+}) {
+  const [index, setIndex] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+
+  useEffect(() => {
+    if (isPaused) return;
+    const timer = setInterval(() => {
+      setIndex((prev) => (prev + 1) % quotes.length);
+    }, intervalMs);
+    return () => clearInterval(timer);
+  }, [isPaused, intervalMs, quotes.length]);
+
+  const active = quotes[index];
+
+  return (
+    <div
+      className="max-w-xl mx-auto"
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+    >
+      <blockquote key={active.attribution} className="italic text-amber-50/90 animate-fade-in min-h-[6.5rem] sm:min-h-[5rem]">
+        <p className="text-lg">{active.quote}</p>
+        <footer className="mt-2 text-sm text-amber-200/70 not-italic">
+          — {active.attribution}
+        </footer>
+      </blockquote>
+
+      <div className="flex justify-center gap-2 mt-5">
+        {quotes.map((item, i) => (
+          <button
+            key={item.attribution}
+            type="button"
+            aria-label={`Show quote ${i + 1}`}
+            onClick={() => setIndex(i)}
+            className="relative w-2.5 h-2.5 rounded-full bg-white/20 overflow-hidden"
+          >
+            {i === index && (
+              <span
+                key={`${index}-${isPaused}`}
+                className="absolute inset-0 rounded-full bg-amber-300"
+                style={{
+                  animation: isPaused
+                    ? "none"
+                    : `storenode-quote-fill ${intervalMs}ms linear forwards`,
+                }}
+              />
+            )}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/** Phone entry for the homepage "Find your rewards" section — validates, then hands off to the dedicated lookup page. */
+function FindRewardsForm() {
+  const navigate = useNavigate();
+  const [phone, setPhone] = useState("");
+  const [error, setError] = useState<string | null>(null);
+
+  const handleSubmit = () => {
+    if (!INDIA_PHONE_PATTERN.test(phone)) {
+      setError("Enter a valid 10-digit mobile number");
+      return;
+    }
+    setError(null);
+    navigate(`${routePaths.findRewards()}?phone=${phone}`);
+  };
+
+  return (
+    <div className="flex flex-col sm:flex-row gap-2 items-stretch sm:items-start max-w-md mx-auto">
+      <div className="flex-1">
+        <input
+          type="tel"
+          inputMode="numeric"
+          placeholder="Your 10-digit mobile number"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+          className={`input input-bordered w-full ${error ? "input-error" : ""}`}
+        />
+        {error && (
+          <span className="block mt-1 text-sm text-error">{error}</span>
+        )}
+      </div>
+      <button
+        type="button"
+        className="btn btn-secondary shrink-0"
+        onClick={handleSubmit}
+      >
+        Find My Rewards
+      </button>
+    </div>
+  );
+}
 
 const chips = [
   {
@@ -216,6 +368,13 @@ export default function Home() {
                   <GoogleLoginButton />
                   <button
                     type="button"
+                    onClick={scrollToRewardsSection}
+                    className="text-sm font-medium px-4 py-2 rounded-full bg-white/10 text-slate-100 ring-1 ring-white/20 hover:bg-white/15 transition-colors"
+                  >
+                    Find Your Rewards
+                  </button>
+                  <button
+                    type="button"
                     className="text-sm font-medium text-slate-200 underline underline-offset-4 hover:text-white transition-colors"
                   >
                     Watch the 2-minute demo
@@ -326,6 +485,45 @@ export default function Home() {
               <p className="mt-2 text-sm text-base-content/60">{pillar.body}</p>
             </div>
           ))}
+        </div>
+      </div>
+
+      {/* Find Your Rewards — parallax, no photo asset available for this
+          section, so bg-fixed is applied to a gradient instead of a
+          photo url(), same scroll-parallax mechanism as the hero. */}
+      <div
+        id={REWARDS_SECTION_ID}
+        className="relative bg-fixed bg-cover bg-center bg-gradient-to-br from-amber-700 via-amber-800 to-emerald-900"
+      >
+        <RewardsPattern className="pointer-events-none absolute inset-0 w-full h-full text-white/[0.06]" />
+        <div className="relative container px-6 py-20 sm:py-28 mx-auto max-w-2xl text-center">
+          <span className="inline-block text-xs font-semibold tracking-wide uppercase px-3 py-1 rounded-full bg-white/10 text-amber-100 ring-1 ring-white/20">
+            Every scan tells a story
+          </span>
+
+          <h2 className="mt-4 text-2xl sm:text-3xl font-bold text-white leading-tight">
+            Find Your Rewards
+          </h2>
+
+          <p className="mt-5 text-amber-50/90 leading-relaxed">
+            It starts with a QR code at a billing counter. A customer scans
+            it, leaves a review, and a store remembers their number — with
+            consent, for a reason. Every visit after that quietly adds up:
+            a point for the review, a point for sharing, a point for coming
+            back for their birthday. Somewhere, unclaimed, a small reward is
+            always waiting.
+          </p>
+
+          <div className="mt-10">
+            <p className="text-sm font-medium text-amber-100 mb-3">
+              Enter your number to see what's waiting for you.
+            </p>
+            <FindRewardsForm />
+          </div>
+
+          <div className="mt-10">
+            <RotatingQuote quotes={rewardsQuotes} />
+          </div>
         </div>
       </div>
 
