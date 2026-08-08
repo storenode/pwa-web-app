@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import {
   claimStoreReward,
+  fetchCustomerDateOfBirth,
   fetchPublicStoreInfo,
   fetchUnclaimedRewardSummary,
   recordChannelClick,
@@ -24,6 +25,7 @@ export function usePublicStoreReward(storeId: string | undefined) {
   const [phone, setPhone] = useState("");
   const [phoneError, setPhoneError] = useState<string | null>(null);
   const [dateOfBirth, setDateOfBirth] = useState("");
+  const [isDateOfBirthLocked, setIsDateOfBirthLocked] = useState(false);
   const [birthdayNotice, setBirthdayNotice] = useState<string | null>(null);
   const [isClaiming, setIsClaiming] = useState(false);
   const [isUnlocked, setIsUnlocked] = useState(false);
@@ -59,6 +61,37 @@ export function usePublicStoreReward(storeId: string | undefined) {
       cancelled = true;
     };
   }, [storeId]);
+
+  useEffect(() => {
+    if (!storeId || !INDIA_PHONE_PATTERN.test(phone)) {
+      setIsDateOfBirthLocked(false);
+      setDateOfBirth("");
+      return;
+    }
+
+    let cancelled = false;
+    fetchCustomerDateOfBirth(storeId, phone)
+      .then((existing) => {
+        if (cancelled) return;
+        if (existing) {
+          setDateOfBirth(existing);
+          setIsDateOfBirthLocked(true);
+        } else {
+          setDateOfBirth("");
+          setIsDateOfBirthLocked(false);
+        }
+      })
+      .catch((err: Error) => {
+        console.error(
+          "Failed to fetch existing date of birth:",
+          err.message,
+        );
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [storeId, phone]);
 
   const refreshUnclaimedPoints = async (
     currentStoreId: string,
@@ -159,6 +192,7 @@ export function usePublicStoreReward(storeId: string | undefined) {
     phoneError,
     dateOfBirth,
     setDateOfBirth,
+    isDateOfBirthLocked,
     birthdayNotice,
     isClaiming,
     isUnlocked,

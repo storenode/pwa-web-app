@@ -126,6 +126,13 @@ begin
     raise exception 'store % not found', p_store_id;
   end if;
 
+  if exists (
+    select 1 from public.reward_redemptions
+    where node_id = p_store_id and phone = p_phone and status = 'requested'
+  ) then
+    raise exception 'a redemption request is already pending for this phone number';
+  end if;
+
   select coalesce(sum(points), 0) into v_points
   from public.node_rewards
   where node_id = p_store_id and phone = p_phone and status = 'unclaimed';

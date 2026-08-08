@@ -16,6 +16,7 @@ export default function PublicStoreView() {
     phoneError,
     dateOfBirth,
     setDateOfBirth,
+    isDateOfBirthLocked,
     birthdayNotice,
     isClaiming,
     isUnlocked,
@@ -59,6 +60,7 @@ export default function PublicStoreView() {
                 phoneError={phoneError}
                 dateOfBirth={dateOfBirth}
                 setDateOfBirth={setDateOfBirth}
+                isDateOfBirthLocked={isDateOfBirthLocked}
                 isClaiming={isClaiming}
                 onContinue={() => void handleClaim()}
               />
@@ -85,6 +87,7 @@ export default function PublicStoreView() {
                 <ChannelButtons
                   channels={info.channels}
                   onChannelClick={handleChannelClick}
+                  isRewardPending={!!unclaimedPoints && unclaimedPoints > 0}
                 />
               </>
             )}

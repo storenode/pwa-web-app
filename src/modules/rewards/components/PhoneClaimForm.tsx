@@ -6,6 +6,7 @@ interface PhoneClaimFormProps {
   phoneError: string | null;
   dateOfBirth: string;
   setDateOfBirth: (value: string) => void;
+  isDateOfBirthLocked: boolean;
   isClaiming: boolean;
   onContinue: () => void;
 }
@@ -17,6 +18,7 @@ export default function PhoneClaimForm({
   phoneError,
   dateOfBirth,
   setDateOfBirth,
+  isDateOfBirthLocked,
   isClaiming,
   onContinue,
 }: PhoneClaimFormProps) {
@@ -37,13 +39,16 @@ export default function PhoneClaimForm({
       {INDIA_PHONE_PATTERN.test(phone) && (
         <>
           <p className="text-base-content/60 text-sm">
-            Share your date of birth for a bonus reward (once a year).
+            {isDateOfBirthLocked
+              ? "Date of birth already on file for this number."
+              : "Share your date of birth for a bonus reward (once a year)."}
           </p>
           <input
             type="date"
             value={dateOfBirth}
             onChange={(e) => setDateOfBirth(e.target.value)}
             max={new Date().toISOString().slice(0, 10)}
+            disabled={isDateOfBirthLocked}
             className="input input-bordered w-full"
           />
         </>

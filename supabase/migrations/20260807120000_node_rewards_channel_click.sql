@@ -57,8 +57,10 @@ grant execute on function "public"."claim_store_reward"(uuid, text, date) to ano
 
 -- Called when a customer clicks a channel button (Google review, Instagram,
 -- etc.) on the public store page — one reward row per click, tagged with
--- which channel was clicked. No dedupe: clicking the same channel twice
--- grants twice, by design for this pass.
+-- which channel was clicked. Blocked while this phone already has any
+-- unclaimed reward at this store: they must redeem (or have it claimed)
+-- before earning another one, rather than stacking unlimited unclaimed
+-- rows from repeat clicks.
 create or replace function "public"."record_channel_click"(
   p_store_id uuid,
   p_phone text,
@@ -74,6 +76,13 @@ declare
 begin
   if not exists (select 1 from public.nodes where id = p_store_id) then
     raise exception 'store % not found', p_store_id;
+  end if;
+
+  if exists (
+    select 1 from public.node_rewards
+    where node_id = p_store_id and phone = p_phone and status = 'unclaimed'
+  ) then
+    raise exception 'a reward is already pending for this phone number';
   end if;
 
   insert into public.node_rewards (node_id, phone, reward_type, channel_type)

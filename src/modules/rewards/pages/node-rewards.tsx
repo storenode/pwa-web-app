@@ -130,6 +130,11 @@ export default function NodeRewards() {
     }
   };
 
+  const selectedStoreId = cards[qrCodeSlideIndex]?.store.id;
+  const storeRedemptions = selectedStoreId
+    ? redemptions.filter((redemption) => redemption.nodeId === selectedStoreId)
+    : [];
+
   return (
     <div className="p-6 flex flex-col gap-4">
       <NavigableCard
@@ -196,6 +201,12 @@ export default function NodeRewards() {
                               Status
                             </TableCell>
                             <TableCell isHeader className="text-start">
+                              Created At
+                            </TableCell>
+                            <TableCell isHeader className="text-start">
+                              Claimed At
+                            </TableCell>
+                            <TableCell isHeader className="text-start">
                               Actions
                             </TableCell>
                           </TableRow>
@@ -203,7 +214,7 @@ export default function NodeRewards() {
                         <TableBody>
                           {storeRewards.length === 0 ? (
                             <TableRow>
-                              <TableCell colSpan={8} className="text-center">
+                              <TableCell colSpan={10} className="text-center">
                                 <div className="w-full flex justify-center items-center gap-2">
                                   <span className="text-sm text-base-content/60">
                                     No rewards yet for this store.
@@ -252,6 +263,18 @@ export default function NodeRewards() {
                                     </span>
                                   </TableCell>
                                   <TableCell>
+                                    {new Date(
+                                      reward.createdAt,
+                                    ).toLocaleDateString()}
+                                  </TableCell>
+                                  <TableCell>
+                                    {reward.claimedAt
+                                      ? new Date(
+                                          reward.claimedAt,
+                                        ).toLocaleDateString()
+                                      : "—"}
+                                  </TableCell>
+                                  <TableCell>
                                     {reward.status === "unclaimed" && (
                                       <button
                                         type="button"
@@ -296,7 +319,7 @@ export default function NodeRewards() {
         title="Redemption Requests"
         desc="Customer-submitted bill claims — approve to apply the discount and mark the underlying points claimed, or reject to release them."
       >
-        {redemptions.length === 0 ? (
+        {storeRedemptions.length === 0 ? (
           <p className="text-sm text-base-content/60">
             No redemption requests yet.
           </p>
@@ -326,12 +349,18 @@ export default function NodeRewards() {
                   Status
                 </TableCell>
                 <TableCell isHeader className="text-start">
+                  Requested At
+                </TableCell>
+                <TableCell isHeader className="text-start">
+                  Reviewed At
+                </TableCell>
+                <TableCell isHeader className="text-start">
                   Actions
                 </TableCell>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {redemptions.map((redemption) => (
+              {storeRedemptions.map((redemption) => (
                 <TableRow key={redemption.id}>
                   <TableCell>
                     {storeNameById.get(redemption.nodeId) ??
@@ -354,6 +383,14 @@ export default function NodeRewards() {
                     >
                       {redemption.status}
                     </span>
+                  </TableCell>
+                  <TableCell>
+                    {new Date(redemption.requestedAt).toLocaleDateString()}
+                  </TableCell>
+                  <TableCell>
+                    {redemption.reviewedAt
+                      ? new Date(redemption.reviewedAt).toLocaleDateString()
+                      : "—"}
                   </TableCell>
                   <TableCell>
                     {redemption.status === "requested" && (

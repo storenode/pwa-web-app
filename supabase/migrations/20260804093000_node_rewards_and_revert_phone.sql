@@ -8,7 +8,7 @@ create table if not exists "public"."node_rewards" (
   "id" uuid primary key default gen_random_uuid(),
   "node_id" uuid not null references "public"."nodes"(id) on delete cascade,
   "phone" text not null,
-  "points" int not null default 10,
+  "points" int not null default 5,
   "status" text not null default 'unclaimed' check (status in ('unclaimed', 'claimed')),
   "created_at" timestamptz not null default now(),
   "claimed_at" timestamptz,

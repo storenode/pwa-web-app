@@ -262,6 +262,26 @@ export async function fetchUnclaimedRewardSummary(
 }
 
 /**
+ * Public (anon-callable): a customer's date of birth already on file for a
+ * store (if any), via the get_customer_date_of_birth security-definer RPC —
+ * node_rewards itself is staff-only via RLS, so this is the only way an
+ * anonymous visitor's own prior submission can be looked up. Used to
+ * prefill and lock the DOB field for a returning phone number.
+ */
+export async function fetchCustomerDateOfBirth(
+  storeId: string,
+  phone: string,
+): Promise<string | null> {
+  const { data, error } = await supabase.rpc("get_customer_date_of_birth", {
+    p_store_id: storeId,
+    p_phone: phone,
+  });
+
+  if (error) throw error;
+  return (data as unknown as string | null) ?? null;
+}
+
+/**
  * Public (anon-callable): customer requests a redemption of their entire
  * unclaimed point balance against a bill, via the request_reward_redemption
  * security-definer RPC. This only creates a 'requested' record — the
