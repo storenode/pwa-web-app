@@ -6,20 +6,35 @@ import { useNodesStore } from "../../../shared/store/nodesStore";
 export default function AuthCallback() {
   const navigate = useNavigate();
   const { session, member, isLoading } = useAuthStore();
-  const { memberships, isLoading: nodesLoading } = useNodesStore();
+  const { memberships, isLoading: nodesLoading, setActiveNodeId } =
+    useNodesStore();
 
   useEffect(() => {
     if (isLoading) return; // wait for AuthProvider to finish
 
     if (session && member) {
       if (nodesLoading) return; // wait for node membership check
-      navigate(memberships.length > 0 ? "/dashboard" : "/public/no-node", {
-        replace: true,
-      });
+
+      if (memberships.length === 0) {
+        navigate("/public/no-node", { replace: true });
+      } else if (memberships.length === 1) {
+        setActiveNodeId(memberships[0].nodeId);
+        navigate("/dashboard", { replace: true });
+      } else {
+        navigate("/launch", { replace: true });
+      }
     } else {
       navigate("/public/home", { replace: true });
     }
-  }, [session, member, isLoading, memberships, nodesLoading, navigate]);
+  }, [
+    session,
+    member,
+    isLoading,
+    memberships,
+    nodesLoading,
+    navigate,
+    setActiveNodeId,
+  ]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-base-200">

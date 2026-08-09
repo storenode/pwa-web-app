@@ -48,6 +48,8 @@ export interface MembershipRecord {
 
 export type NodeScope = "all" | "own";
 
+const ACTIVE_NODE_ID_STORAGE_KEY = "selfnode.activeNodeId";
+
 interface NodesState {
   /** The logged-in user's own node_members rows, joined with node + role. Always fetched on login. */
   memberships: MembershipRecord[];
@@ -56,12 +58,15 @@ interface NodesState {
   scope: NodeScope | null;
   isLoading: boolean;
   error: string | null;
+  /** The node/store the user picked to work in, for users with multiple memberships. */
+  activeNodeId: string | null;
   isPlatformAdmin: () => boolean;
   setMemberships: (memberships: MembershipRecord[]) => void;
   setNodes: (nodes: NodeRecord[]) => void;
   setScope: (scope: NodeScope | null) => void;
   setLoading: (isLoading: boolean) => void;
   setError: (error: string | null) => void;
+  setActiveNodeId: (nodeId: string | null) => void;
   reset: () => void;
 }
 
@@ -71,6 +76,9 @@ const initialState = {
   scope: null as NodeScope | null,
   isLoading: true,
   error: null as string | null,
+  activeNodeId: (typeof window !== "undefined"
+    ? window.localStorage.getItem(ACTIVE_NODE_ID_STORAGE_KEY)
+    : null) as string | null,
 };
 
 // Compares two id-bearing lists by content (sorted by id), ignoring array
@@ -109,5 +117,20 @@ export const useNodesStore = create<NodesState>()((set, get) => ({
   setScope: (scope) => set({ scope }),
   setLoading: (isLoading) => set({ isLoading }),
   setError: (error) => set({ error }),
-  reset: () => set({ ...initialState }),
+  setActiveNodeId: (nodeId) => {
+    if (typeof window !== "undefined") {
+      if (nodeId) {
+        window.localStorage.setItem(ACTIVE_NODE_ID_STORAGE_KEY, nodeId);
+      } else {
+        window.localStorage.removeItem(ACTIVE_NODE_ID_STORAGE_KEY);
+      }
+    }
+    set({ activeNodeId: nodeId });
+  },
+  reset: () => {
+    if (typeof window !== "undefined") {
+      window.localStorage.removeItem(ACTIVE_NODE_ID_STORAGE_KEY);
+    }
+    set({ ...initialState, activeNodeId: null });
+  },
 }));

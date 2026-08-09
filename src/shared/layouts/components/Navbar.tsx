@@ -4,11 +4,16 @@ import { supabase } from "../../../lib/supabase";
 import ThemeToggle from "../../components/ThemeToggle";
 import { StoreNodeLogo } from "../../components/StoreNodeLogo";
 import { useAuthStore } from "../../store/authStore";
+import { useNodesStore } from "../../store/nodesStore";
 import PageRefreshButton from "@/shared/components/PageRefreshButton";
+import AccountSwitcher from "@/shared/components/AccountSwitcher";
 
 export default function Navbar() {
   const navigate = useNavigate();
   const member = useAuthStore((state) => state.member);
+  const hasMultipleMemberships = useNodesStore(
+    (state) => state.memberships.length > 1,
+  );
   const [avatarError, setAvatarError] = useState(false);
 
   const handleSignOut = async () => {
@@ -49,6 +54,7 @@ export default function Navbar() {
         </div>
         <div className="flex items-center gap-2 sm:gap-4 px-2 sm:px-4 shrink-0">
           <ThemeToggle />
+          {hasMultipleMemberships && <AccountSwitcher />}
           <PageRefreshButton />
           <div className="dropdown dropdown-end">
             <div

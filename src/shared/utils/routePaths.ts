@@ -20,4 +20,6 @@ export const routePaths = {
   publicStore: (storeId: string) => `/store/${idCodec.encodeId(storeId)}`,
   /** Public, anon-facing cross-store "find my rewards by phone" lookup. */
   findRewards: () => "/rewards/find",
+  /** Store picker shown to users with more than one node membership. */
+  launch: () => "/launch",
 };

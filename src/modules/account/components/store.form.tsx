@@ -66,21 +66,6 @@ export default function StoreForm() {
         )}
       </label>
 
-      <fieldset className="fieldset">
-        <legend className="fieldset-legend">Logo (optional)</legend>
-        <input
-          type="file"
-          accept="image/*"
-          className={`file-input w-full ${errors.logoUrl ? "file-input-error" : ""}`}
-          {...register("logoUrl")}
-        />
-        {errors.logoUrl ? (
-          <span className="label text-error">{errors.logoUrl.message}</span>
-        ) : (
-          <span className="label">Max size 2MB</span>
-        )}
-      </fieldset>
-
       <label className="form-control w-full">
         <div className="label">
           <span className="label-text">City</span>
@@ -116,19 +101,27 @@ export default function StoreForm() {
           </div>
         )}
       </label>
+
+      <fieldset className="fieldset">
+        <legend className="fieldset-legend">Logo (optional)</legend>
+        <input
+          type="file"
+          accept="image/*"
+          className={`file-input w-full ${errors.logoUrl ? "file-input-error" : ""}`}
+          {...register("logoUrl")}
+        />
+        {errors.logoUrl ? (
+          <span className="label text-error">{errors.logoUrl.message}</span>
+        ) : (
+          <span className="label">Max size 2MB</span>
+        )}
+      </fieldset>
     </div>
   );
 }
 
 // node_channels.channel_type enum (see supabase/storenode-schema.svg)
-export const CHANNEL_TYPES = [
-  "fb",
-  "ig",
-  "google",
-  "wa",
-  "yt",
-  "web",
-] as const;
+export const CHANNEL_TYPES = ["fb", "ig", "google", "wa", "yt", "web"] as const;
 export type ChannelType = (typeof CHANNEL_TYPES)[number];
 
 export const CHANNEL_TYPE_LABELS: Record<ChannelType, string> = {

@@ -4,12 +4,17 @@ import DashboardLayout from "../../shared/layouts/DashboardLayout";
 import BrowseAllNodes from "./pages/nodes";
 import AddEditNodes from "./pages/add-edit-nodes";
 import AddEditStores from "./pages/add-edit-stores";
+import SelectStore from "./pages/select-store";
 import NodeRewards from "@/modules/rewards/pages/node-rewards";
 
 const accountRoutes: RouteObject[] = [
   {
     element: <ProtectedRoute />,
     children: [
+      {
+        path: "/launch",
+        element: <SelectStore />,
+      },
       {
         element: <DashboardLayout />,
         children: [

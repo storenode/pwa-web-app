@@ -34,7 +34,7 @@ export default function NodesTable() {
       cell: ({ row, getValue }) => (
         <div
           style={{ paddingLeft: `${row.depth * 1.5}rem` }}
-          className="flex items-center gap-2"
+          className={`flex items-center gap-2`}
         >
           {row.getCanExpand() ? (
             <button
@@ -78,7 +78,12 @@ export default function NodesTable() {
           ) : (
             <span className="w-6" />
           )}
-          {row.getCanExpand() && (
+          {/* Only brand/root-level nodes (no parent) can have store
+              children — this must NOT depend on row.getCanExpand(), which
+              is only true once the brand already has at least one store
+              (see buildTree in account.utils.tsx), otherwise a brand with
+              zero stores can never get its first one added. */}
+          {!row.original.parentId && (
             <div className="dropdown dropdown-right dropdown-end">
               <div
                 tabIndex={0}
@@ -115,24 +120,22 @@ export default function NodesTable() {
               </ul>
             </div>
           )}
-          <Link
-            to={
-              row.original.parentId
-                ? routePaths.store(row.original.parentId, row.original.id)
-                : routePaths.node(row.original.id)
-            }
-            className="link link-hover font-medium text-primary cursor-pointer"
-          >
-            {getValue<string | null>() ?? "—"}
-          </Link>
+          <div className="flex items-center gap-2">
+            {!row.original.parentId && (
+              <div className="badge badge-warning badge-xs">Node</div>
+            )}
+            <Link
+              to={
+                row.original.parentId
+                  ? routePaths.store(row.original.parentId, row.original.id)
+                  : routePaths.node(row.original.id)
+              }
+              className="link link-hover font-medium text-primary cursor-pointer"
+            >
+              {getValue<string | null>() ?? "—"}
+            </Link>
+          </div>
         </div>
-      ),
-    },
-    {
-      accessorKey: "slug",
-      header: "Slug",
-      cell: ({ getValue }) => (
-        <span className="opacity-60">{getValue<string | null>() ?? "—"}</span>
       ),
     },
     {

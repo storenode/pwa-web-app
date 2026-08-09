@@ -93,6 +93,7 @@ function isPathActive(pattern: string, current: string) {
 export default function SideNav() {
   const activeLink = useNavStore((state) => state.activeLink);
   const memberships = useNodesStore((state) => state.memberships);
+  const activeNodeId = useNodesStore((state) => state.activeNodeId);
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({});
 
   const userRoleKeys = new Set(
@@ -108,6 +109,7 @@ export default function SideNav() {
   // for non-brand-admin roles) rather than linking to the literal ":nodeId"
   // segment, which react-router would otherwise treat as the actual param.
   const primaryNodeId =
+    activeNodeId ??
     memberships.find((m) => m.role?.roleKey === "brand_admin")?.nodeId ??
     memberships[0]?.nodeId;
 

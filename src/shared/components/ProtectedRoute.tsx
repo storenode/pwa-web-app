@@ -1,10 +1,15 @@
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useAuthStore } from "../store/authStore";
 import { useNodesStore } from "../store/nodesStore";
 
 export default function ProtectedRoute() {
+  const location = useLocation();
   const { session, member, isLoading } = useAuthStore();
-  const { memberships, isLoading: nodesLoading } = useNodesStore();
+  const {
+    memberships,
+    isLoading: nodesLoading,
+    activeNodeId,
+  } = useNodesStore();
 
   if (isLoading) {
     return (
@@ -28,6 +33,14 @@ export default function ProtectedRoute() {
 
   if (memberships.length === 0) {
     return <Navigate to="/public/no-node" replace />;
+  }
+
+  if (
+    memberships.length > 1 &&
+    !activeNodeId &&
+    location.pathname !== "/launch"
+  ) {
+    return <Navigate to="/launch" replace />;
   }
 
   return <Outlet />;
