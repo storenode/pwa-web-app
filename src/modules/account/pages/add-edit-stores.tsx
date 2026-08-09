@@ -39,7 +39,6 @@ export default function AddEditStores() {
     defaultValues: {
       name: store?.name || "",
       displayName: store?.displayName || "",
-      slug: store?.slug || "",
       status: store?.status || "",
       logoUrl: undefined,
       city: store?.city || "",

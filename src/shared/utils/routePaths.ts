@@ -14,6 +14,8 @@ export const routePaths = {
   store: (nodeId: string, storeId: string) =>
     `/node/${idCodec.encodeId(nodeId)}/store/${idCodec.encodeId(storeId)}`,
   rewards: (nodeId: string) => `/node/${idCodec.encodeId(nodeId)}/rewards`,
+  voiceReviews: (nodeId: string) =>
+    `/node/${idCodec.encodeId(nodeId)}/voice-reviews`,
   /** Public, anon-facing QR-scan landing page. */
   publicStore: (storeId: string) => `/store/${idCodec.encodeId(storeId)}`,
   /** Public, anon-facing cross-store "find my rewards by phone" lookup. */

@@ -151,7 +151,6 @@ function toNodeInsert(values: NodeFormValues | StoreFormValues) {
   return {
     name: values.name,
     display_name: values.displayName,
-    slug: values.slug,
     status: values.status,
     city: values.city,
     address: values.address,

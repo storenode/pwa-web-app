@@ -25,7 +25,6 @@ export default function AddEditNodes() {
     defaultValues: {
       name: node?.name || "",
       displayName: node?.displayName || "",
-      slug: node?.slug || "",
       status: node?.status || "",
       logoUrl: undefined,
       city: node?.city || "",

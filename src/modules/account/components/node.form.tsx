@@ -48,24 +48,6 @@ export default function NodeForm() {
 
       <label className="form-control w-full">
         <div className="label">
-          <span className="label-text">Slug</span>
-        </div>
-        <input
-          type="text"
-          className={`input input-bordered w-full ${errors.slug ? "input-error" : ""}`}
-          {...register("slug")}
-        />
-        {errors.slug && (
-          <div className="label">
-            <span className="label-text-alt text-error">
-              {errors.slug.message}
-            </span>
-          </div>
-        )}
-      </label>
-
-      <label className="form-control w-full">
-        <div className="label">
           <span className="label-text">Status</span>
         </div>
         <select
@@ -84,21 +66,6 @@ export default function NodeForm() {
           </div>
         )}
       </label>
-
-      <fieldset className="fieldset">
-        <legend className="fieldset-legend">Logo (optional)</legend>
-        <input
-          type="file"
-          accept="image/*"
-          className={`file-input w-full ${errors.logoUrl ? "file-input-error" : ""}`}
-          {...register("logoUrl")}
-        />
-        {errors.logoUrl ? (
-          <span className="label text-error">{errors.logoUrl.message}</span>
-        ) : (
-          <span className="label">Max size 2MB</span>
-        )}
-      </fieldset>
 
       <label className="form-control w-full">
         <div className="label">
@@ -135,6 +102,21 @@ export default function NodeForm() {
           </div>
         )}
       </label>
+
+      <fieldset className="fieldset">
+        <legend className="fieldset-legend">Logo (optional)</legend>
+        <input
+          type="file"
+          accept="image/*"
+          className={`file-input w-full ${errors.logoUrl ? "file-input-error" : ""}`}
+          {...register("logoUrl")}
+        />
+        {errors.logoUrl ? (
+          <span className="label text-error">{errors.logoUrl.message}</span>
+        ) : (
+          <span className="label">Max size 2MB</span>
+        )}
+      </fieldset>
     </div>
   );
 }
@@ -146,7 +128,6 @@ export const nodeFormSchema = s.object({
     s.trim(),
     s.minLength(1, "Display name is required"),
   ),
-  slug: s.pipe(s.string(), s.trim(), s.minLength(1, "Slug is required")),
   status: s.pipe(s.string(), s.trim(), s.minLength(1, "Status is required")),
   logoUrl: s.optional(
     s.pipe(

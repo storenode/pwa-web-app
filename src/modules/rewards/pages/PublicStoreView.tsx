@@ -5,6 +5,7 @@ import { usePublicStoreReward } from "../hooks/usePublicStoreReward";
 import PhoneClaimForm from "../components/PhoneClaimForm";
 import ChannelButtons from "../components/ChannelButtons";
 import RedemptionClaimForm from "../components/RedemptionClaimForm";
+import VoiceYourReviewButton from "@/modules/voiceNote/components/VoiceYourReviewBtn";
 
 export default function PublicStoreView() {
   const { storeId } = useSecureParams<{ storeId: string }>();
@@ -65,7 +66,7 @@ export default function PublicStoreView() {
                 onContinue={() => void handleClaim()}
               />
             ) : (
-              <>
+              <div className="flex flex-col gap-4">
                 {birthdayNotice && (
                   <p className="text-warning text-sm">{birthdayNotice}</p>
                 )}
@@ -84,12 +85,14 @@ export default function PublicStoreView() {
                   onSubmit={() => void handleRequestRedemption()}
                 />
 
+                <VoiceYourReviewButton storeId={storeId} phone={phone} />
+
                 <ChannelButtons
                   channels={info.channels}
                   onChannelClick={handleChannelClick}
                   isRewardPending={!!unclaimedPoints && unclaimedPoints > 0}
                 />
-              </>
+              </div>
             )}
           </>
         )}

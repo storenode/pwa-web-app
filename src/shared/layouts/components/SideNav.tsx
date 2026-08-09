@@ -71,6 +71,10 @@ const NAV_ITEMS: NavItem[] = [
         label: "Rewards",
         path: "/node/:nodeId/rewards",
       },
+      {
+        label: "Voice Reviews",
+        path: "/node/:nodeId/voice-reviews",
+      },
     ],
   },
 ];
