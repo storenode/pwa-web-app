@@ -3,14 +3,15 @@ import { Link, matchPath } from "react-router-dom";
 import { useNavStore } from "../../store/navStore";
 import { useNodesStore } from "../../store/nodesStore";
 import { idCodec } from "../../store/idCodecStore";
+import { CAPABILITIES } from "../../capabilities";
 import { LogoLight } from "../../components/LogoLight";
 import { LogoDark } from "../../components/LogoDark";
 
 interface NavChild {
   label: string;
   path: string;
-  /** Only rendered if the user holds at least one of these role_key values. */
-  roles?: string[];
+  /** Only rendered if the user holds this capability (see capabilities.ts). */
+  capability?: string;
 }
 
 interface NavItem extends NavChild {
@@ -22,6 +23,7 @@ const NAV_ITEMS: NavItem[] = [
   {
     label: "Dashboard",
     path: "/dashboard",
+    capability: CAPABILITIES["dashboard:view"],
     icon: (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -61,19 +63,22 @@ const NAV_ITEMS: NavItem[] = [
       {
         label: "Browse All",
         path: "/node/",
+        capability: CAPABILITIES["nodes:browse_all"],
       },
       {
         label: "Add-Edit Nodes",
         path: "/node/:nodeId",
-        roles: ["platform_admin"],
+        capability: CAPABILITIES["nodes:manage"],
       },
       {
         label: "Rewards",
         path: "/node/:nodeId/rewards",
+        capability: CAPABILITIES["rewards:view"],
       },
       {
         label: "Voice Reviews",
         path: "/node/:nodeId/voice-reviews",
+        capability: CAPABILITIES["voice_reviews:view"],
       },
     ],
   },
@@ -94,15 +99,11 @@ export default function SideNav() {
   const activeLink = useNavStore((state) => state.activeLink);
   const memberships = useNodesStore((state) => state.memberships);
   const activeNodeId = useNodesStore((state) => state.activeNodeId);
+  const hasCapability = useNodesStore((state) => state.hasCapability);
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({});
 
-  const userRoleKeys = new Set(
-    memberships
-      .map((m) => m.role?.roleKey)
-      .filter((key): key is string => !!key),
-  );
-  const canView = (roles?: string[]) =>
-    !roles || roles.some((role) => userRoleKeys.has(role));
+  const canView = (capability?: string) =>
+    !capability || hasCapability(capability);
 
   // Some nav entries (e.g. "Rewards") are node-specific route patterns —
   // resolve ":nodeId" to the user's own brand (or their first membership,
@@ -122,11 +123,11 @@ export default function SideNav() {
     !path.includes(":nodeId") || !!primaryNodeId;
 
   const visibleNavItems = NAV_ITEMS.filter(
-    (item) => canView(item.roles) && canResolve(item.path),
+    (item) => canView(item.capability) && canResolve(item.path),
   ).map((item) => ({
     ...item,
     children: item.children?.filter(
-      (child) => canView(child.roles) && canResolve(child.path),
+      (child) => canView(child.capability) && canResolve(child.path),
     ),
   }));
 

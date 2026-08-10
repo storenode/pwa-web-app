@@ -1,6 +1,8 @@
 import type { RouteObject } from "react-router-dom";
 import ProtectedRoute from "../../shared/components/ProtectedRoute";
 import DashboardLayout from "../../shared/layouts/DashboardLayout";
+import RequireCapability from "../../shared/components/RequireCapability";
+import { CAPABILITIES } from "../../shared/capabilities";
 import BrowseAllNodes from "./pages/nodes";
 import AddEditNodes from "./pages/add-edit-nodes";
 import AddEditStores from "./pages/add-edit-stores";
@@ -20,19 +22,35 @@ const accountRoutes: RouteObject[] = [
         children: [
           {
             path: "/node/",
-            element: <BrowseAllNodes />,
+            element: (
+              <RequireCapability capability={CAPABILITIES["nodes:browse_all"]}>
+                <BrowseAllNodes />
+              </RequireCapability>
+            ),
           },
           {
             path: "/node/:nodeId",
-            element: <AddEditNodes />,
+            element: (
+              <RequireCapability capability={CAPABILITIES["nodes:manage"]}>
+                <AddEditNodes />
+              </RequireCapability>
+            ),
           },
           {
             path: "/node/:nodeId/store/:storeId",
-            element: <AddEditStores />,
+            element: (
+              <RequireCapability capability={CAPABILITIES["store:manage"]}>
+                <AddEditStores />
+              </RequireCapability>
+            ),
           },
           {
             path: "/node/:nodeId/rewards",
-            element: <NodeRewards />,
+            element: (
+              <RequireCapability capability={CAPABILITIES["rewards:view"]}>
+                <NodeRewards />
+              </RequireCapability>
+            ),
           },
         ],
       },

@@ -23,6 +23,7 @@ export default function PublicStoreView() {
     isUnlocked,
     handleClaim,
     unclaimedPoints,
+    hasPendingChannelReward,
     showClaimForm,
     setShowClaimForm,
     billNumber,
@@ -90,7 +91,7 @@ export default function PublicStoreView() {
                 <ChannelButtons
                   channels={info.channels}
                   onChannelClick={handleChannelClick}
-                  isRewardPending={!!unclaimedPoints && unclaimedPoints > 0}
+                  isRewardPending={hasPendingChannelReward}
                 />
               </div>
             )}

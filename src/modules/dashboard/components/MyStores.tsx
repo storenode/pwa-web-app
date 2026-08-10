@@ -18,15 +18,15 @@ interface StoreCard {
 
 export default function MyStores() {
   const memberships = useNodesStore((state) => state.memberships);
-  const brandAdminMembership = memberships.find(
-    (m) => m.role?.roleKey === "brand_admin",
-  );
-  const parentId = brandAdminMembership?.nodeId;
+  const activeNodeId = useNodesStore((state) => state.activeNodeId);
+  const activeNode = memberships.find(
+    (m) => m.nodeId === activeNodeId,
+  )?.node;
 
   const [cards, setCards] = useState<StoreCard[]>([]);
 
   useEffect(() => {
-    if (memberships.length === 0) {
+    if (!activeNode) {
       setCards([]);
       return;
     }
@@ -35,10 +35,10 @@ export default function MyStores() {
     const ownNodeIds = new Set(memberships.map((m) => m.nodeId));
 
     const load = async () => {
-      if (parentId) {
+      if (activeNode.parentId === null) {
         const [childStores, members] = await Promise.all([
-          fetchChildStores(parentId),
-          fetchMembersByParent(parentId),
+          fetchChildStores(activeNode.id),
+          fetchMembersByParent(activeNode.id),
         ]);
 
         const countByNodeId = new Map<string, number>();
@@ -49,26 +49,27 @@ export default function MyStores() {
           );
         }
 
-        return childStores.map((store) => ({
-          store,
-          memberCount: countByNodeId.get(store.id) ?? 0,
-          href: `/node/${parentId}/store/${store.id}`,
-          isMine: ownNodeIds.has(store.id),
-        }));
+        return childStores
+          .filter((store) => store.id !== activeNode.id)
+          .map((store) => ({
+            store,
+            memberCount: countByNodeId.get(store.id) ?? 0,
+            href: `/node/${activeNode.id}/store/${store.id}`,
+            isMine: ownNodeIds.has(store.id),
+          }));
       }
 
-      // Not a brand_admin (platform_admin or plain store-tier member): the
-      // node hierarchy is flat — brands and the platform "storenode" node
-      // both have parent_id null, so there are no children to enumerate.
-      // Show a self-card per node the user is directly a member of.
-      return Promise.all(
-        memberships.map(async (m) => ({
-          store: m.node,
-          memberCount: (await fetchStoreMembers(m.node.id)).length,
-          href: `/node/${m.node.id}`,
+      // The active node is itself a store, not a brand — show only that
+      // one store rather than every node the user is a member of.
+      const members = await fetchStoreMembers(activeNode.id);
+      return [
+        {
+          store: activeNode,
+          memberCount: members.length,
+          href: `/node/${activeNode.parentId}/store/${activeNode.id}`,
           isMine: true,
-        })),
-      );
+        },
+      ];
     };
 
     load()
@@ -83,7 +84,7 @@ export default function MyStores() {
     return () => {
       cancelled = true;
     };
-  }, [parentId, memberships]);
+  }, [activeNode, memberships]);
 
   return (
     <SlidingCardStack>

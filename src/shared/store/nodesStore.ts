@@ -38,6 +38,7 @@ export interface RoleRecord {
   roleKey: string;
   roleLevel: string | null;
   displayName: string | null;
+  capabilities: string[] | null;
 }
 
 export interface MembershipRecord {
@@ -61,6 +62,7 @@ interface NodesState {
   /** The node/store the user picked to work in, for users with multiple memberships. */
   activeNodeId: string | null;
   isPlatformAdmin: () => boolean;
+  hasCapability: (key: string) => boolean;
   setMemberships: (memberships: MembershipRecord[]) => void;
   setNodes: (nodes: NodeRecord[]) => void;
   setScope: (scope: NodeScope | null) => void;
@@ -103,6 +105,18 @@ export const useNodesStore = create<NodesState>()((set, get) => ({
     get().memberships.some(
       (m: MembershipRecord) => m.role?.roleKey === "platform_admin",
     ),
+  hasCapability: (key) => {
+    const resource = key.split(":")[0];
+    return get().memberships.some((m) => {
+      const capabilities = m.role?.capabilities;
+      if (!capabilities) return false;
+      return (
+        capabilities.includes(key) ||
+        capabilities.includes(`${resource}:*`) ||
+        capabilities.includes("*:*")
+      );
+    });
+  },
   setMemberships: (memberships) => {
     const current = get().memberships.map((m) => ({ id: m.nodeId }));
     const next = memberships.map((m) => ({ id: m.nodeId }));

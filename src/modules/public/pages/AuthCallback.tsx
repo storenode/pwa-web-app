@@ -6,8 +6,11 @@ import { useNodesStore } from "../../../shared/store/nodesStore";
 export default function AuthCallback() {
   const navigate = useNavigate();
   const { session, member, isLoading } = useAuthStore();
-  const { memberships, isLoading: nodesLoading, setActiveNodeId } =
-    useNodesStore();
+  const {
+    memberships,
+    isLoading: nodesLoading,
+    setActiveNodeId,
+  } = useNodesStore();
 
   useEffect(() => {
     if (isLoading) return; // wait for AuthProvider to finish
@@ -19,6 +22,7 @@ export default function AuthCallback() {
         navigate("/public/no-node", { replace: true });
       } else if (memberships.length === 1) {
         setActiveNodeId(memberships[0].nodeId);
+        console.log("Navigating to dashboard for node:", memberships[0].nodeId);
         navigate("/dashboard", { replace: true });
       } else {
         navigate("/launch", { replace: true });

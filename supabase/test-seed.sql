@@ -32,16 +32,16 @@
 
 -- 0) Role definitions (no-op if seed.sql already ran)
 insert into "public"."role_definitions"
-  ("role_key", "role_level", "display_name", "sort_order")
+  ("role_key", "role_level", "display_name", "sort_order", "capabilities")
 values
-  ('platform_admin', 'platform', 'Platform Admin', 1),
-  ('platform_manager', 'platform', 'Platform Manager', 2),
-  ('platform_editor', 'platform', 'Platform Editor', 3),
-  ('brand_admin', 'store', 'Brand Admin', 4),
-  ('store_manager', 'store', 'Store Manager', 5),
-  ('sales_person', 'store', 'Sales Person', 6),
-  ('helper', 'store', 'Helper', 7),
-  ('temporary', 'store', 'Temporary', 8)
+  ('platform_admin', 'platform', 'Platform Admin', 1, '["dashboard:*", "nodes:*", "store:*", "rewards:*", "voice_reviews:*"]'),
+  ('platform_manager', 'platform', 'Platform Manager', 2, '["dashboard:*", "nodes:*", "store:*", "rewards:*", "voice_reviews:*"]'),
+  ('platform_editor', 'platform', 'Platform Editor', 3, '["dashboard:*", "store:*"]'),
+  ('brand_admin', 'store', 'Brand Admin', 4, '["dashboard:*", "store:*", "rewards:*", "voice_reviews:*", "nodes:browse_all", "nodes:view", "nodes:create_store"]'),
+  ('store_manager', 'store', 'Store Manager', 5, '["dashboard:*", "store:*", "rewards:*", "voice_reviews:*", "nodes:browse_all", "nodes:view", "nodes:create_store"]'),
+  ('sales_person', 'store', 'Sales Person', 6, '["dashboard:*", "rewards:*", "voice_reviews:*"]'),
+  ('helper', 'store', 'Helper', 7, '["dashboard:*", "rewards:*"]'),
+  ('temporary', 'store', 'Temporary', 8, '["dashboard:*", "rewards:*"]')
 on conflict ("role_key") do nothing;
 
 -- 1) Nodes: two brands, three stores between them (synthetic, safe)

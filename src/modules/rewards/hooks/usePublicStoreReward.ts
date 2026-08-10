@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import {
   claimStoreReward,
   fetchCustomerDateOfBirth,
+  fetchHasPendingChannelReward,
   fetchPublicStoreInfo,
   fetchUnclaimedRewardSummary,
   recordChannelClick,
@@ -30,6 +31,8 @@ export function usePublicStoreReward(storeId: string | undefined) {
   const [isUnlocked, setIsUnlocked] = useState(false);
 
   const [unclaimedPoints, setUnclaimedPoints] = useState<number | null>(null);
+  const [hasPendingChannelReward, setHasPendingChannelReward] =
+    useState(false);
   const [showClaimForm, setShowClaimForm] = useState(false);
   const [billNumber, setBillNumber] = useState("");
   const [billAmount, setBillAmount] = useState("");
@@ -97,11 +100,12 @@ export function usePublicStoreReward(storeId: string | undefined) {
     currentPhone: string,
   ) => {
     try {
-      const total = await fetchUnclaimedRewardSummary(
-        currentStoreId,
-        currentPhone,
-      );
+      const [total, pendingChannelReward] = await Promise.all([
+        fetchUnclaimedRewardSummary(currentStoreId, currentPhone),
+        fetchHasPendingChannelReward(currentStoreId, currentPhone),
+      ]);
       setUnclaimedPoints(total);
+      setHasPendingChannelReward(pendingChannelReward);
     } catch (err) {
       console.error(
         "Failed to fetch unclaimed reward summary:",
@@ -197,6 +201,7 @@ export function usePublicStoreReward(storeId: string | undefined) {
     isUnlocked,
     handleClaim,
     unclaimedPoints,
+    hasPendingChannelReward,
     showClaimForm,
     setShowClaimForm,
     billNumber,

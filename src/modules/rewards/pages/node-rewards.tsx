@@ -60,6 +60,7 @@ export default function NodeRewards() {
     if (!nodeId) return;
 
     let cancelled = false;
+    setQrCodeSlideIndex(0);
 
     fetchChildStores(nodeId)
       .then(async (stores) => {

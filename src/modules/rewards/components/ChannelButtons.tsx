@@ -12,7 +12,7 @@ interface ChannelButtonsProps {
   onChannelClick: (
     channelType: PublicStoreInfo["channels"][number]["channelType"],
   ) => void;
-  /** True once this phone already has an unclaimed reward at this store — record_channel_click blocks a second one, so the buttons are disabled instead of failing silently on click. */
+  /** True once this phone already has an unclaimed channel/Google reward at this store (independent of any pending birthday reward) — record_channel_click blocks a second one, so the buttons are disabled instead of failing silently on click. */
   isRewardPending: boolean;
 }
 

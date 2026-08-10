@@ -262,6 +262,26 @@ export async function fetchUnclaimedRewardSummary(
 }
 
 /**
+ * Public (anon-callable): whether this phone already has an unclaimed
+ * channel/Google reward at this store, via the has_pending_channel_reward
+ * security-definer RPC — used to gate the channel buttons independently of
+ * any pending birthday reward, which no longer blocks a new channel reward
+ * (the two reward types stack; only a second unclaimed channel reward does).
+ */
+export async function fetchHasPendingChannelReward(
+  storeId: string,
+  phone: string,
+): Promise<boolean> {
+  const { data, error } = await supabase.rpc("has_pending_channel_reward", {
+    p_store_id: storeId,
+    p_phone: phone,
+  });
+
+  if (error) throw error;
+  return (data as unknown as boolean) ?? false;
+}
+
+/**
  * Public (anon-callable): a customer's date of birth already on file for a
  * store (if any), via the get_customer_date_of_birth security-definer RPC —
  * node_rewards itself is staff-only via RLS, so this is the only way an

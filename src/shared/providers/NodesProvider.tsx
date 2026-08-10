@@ -25,6 +25,7 @@ interface RoleRow {
   role_key: string;
   role_level: string | null;
   display_name: string | null;
+  capabilities: string[] | null;
 }
 
 interface MembershipRow {
@@ -58,6 +59,7 @@ function toMembershipRecord(row: MembershipRow): MembershipRecord | null {
           roleKey: row.role_definitions.role_key,
           roleLevel: row.role_definitions.role_level,
           displayName: row.role_definitions.display_name,
+          capabilities: row.role_definitions.capabilities,
         }
       : null,
   };
