@@ -2,6 +2,9 @@ import type { ComponentType } from "react";
 import GoogleRewardsScenario, {
   SLUG as googleRewardsSlug,
 } from "./google-rewards/google-rewards";
+import SupplierInvoiceReceivingScenario, {
+  SLUG as supplierInvoiceReceivingSlug,
+} from "./supplier-invoice-receiving/supplier-invoice-receiving";
 
 /**
  * Maps a scenario's slug to its own dedicated detail page, so each scenario
@@ -10,4 +13,5 @@ import GoogleRewardsScenario, {
  */
 export const scenarioPages: Record<string, ComponentType> = {
   [googleRewardsSlug]: GoogleRewardsScenario,
+  [supplierInvoiceReceivingSlug]: SupplierInvoiceReceivingScenario,
 };

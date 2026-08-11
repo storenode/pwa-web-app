@@ -78,4 +78,49 @@ export const scenarios: Scenario[] = [
     demoVideoUrl: null,
     e2eSpec: null,
   },
+  {
+    slug: "supplier-invoice-receiving",
+    version: "",
+    // Invoice capture (Claude Vision extraction), the receivables check
+    // table, and the inventory ledger join are specced but not yet built.
+    // Flip to "released" + set `version` in the same commit as the git tag
+    // once this ships to real stores.
+    status: "planned",
+    title:
+      "Turn a photographed supplier invoice into verified, counted stock — without retyping a single line item",
+    tags: ["Inventory", "Purchasing", "Suppliers", "Stock Receiving", "GRN"],
+    problem:
+      "Bulk buying trips are where retail inventory actually starts, but they're also where the paper trail falls apart. An owner visits manufacturing units in another state, buys on the spot, and comes home with a stack of photographed invoices — some proforma, some final tax invoices, none of them raised through the store's own system. Line items get retyped into a spreadsheet by hand, if at all. Nobody checks the boxes against the invoice when they arrive — shortages, wrong sizes, and damaged pieces only surface weeks later when a store counter runs out of something it was supposed to have.",
+    story:
+      "UnFold Streetwear's owner spends two days visiting garment units out of state, buying stock on the spot for the next season. Each supplier hands over their own invoice on the way out — one a proforma requiring payment before dispatch, another a finished tax invoice already marked prepaid. Back at the corporate office, the admin photographs each invoice on their phone and uploads it to StoreNode. The supplier, the line items, the sizes, and the totals are all read off the page automatically — no retyping. A few days later, the shipment arrives. The store manager pulls up the matching check table on a tablet, opens each box, and counts: this line matches, this one's two units short, and this bundled line of \"4 models\" actually needs splitting into the four separate sizes that showed up. Once every row is resolved, they submit — and the counted stock, not the invoice's stated stock, is what lands in inventory.",
+    resolution:
+      "StoreNode turns a photographed supplier invoice into verified, counted inventory in two phases. Uploading the photo triggers Claude Vision extraction, which auto-populates the supplier record (matching or creating it), the invoice header, and every line item — no manual data entry. Once the admin confirms the extraction looks right and the shipment is marked dispatched, StoreNode generates a receivables check table: one row per invoice line, ready for physical verification. The store manager counts what's actually in the boxes, corrects quantities, flags shortages or damage, and — where an invoice bundled several sizes into one line — splits it into the real counted variants. Only once every row is resolved and submitted does stock join node inventory, with the invoice automatically marked delivered.",
+    benefits: [
+      "Cuts invoice data entry to a phone photo — supplier, line items, and totals are extracted automatically instead of retyped.",
+      "Nothing joins inventory until someone has physically counted it — the invoice states what was billed, the check table states what actually arrived.",
+      "Bundled invoice lines (multiple sizes billed as one line) can be split into the real counted variants during verification, so inventory reflects reality even when the supplier's paperwork doesn't.",
+      "Shortages, excess, and damage get recorded at the moment of receiving, not discovered weeks later when a store runs out of stock.",
+      "Every inventory addition traces back to a specific invoice and a specific person who counted it — a real audit trail instead of a spreadsheet retyped from memory.",
+      "Suppliers get created automatically the first time their invoice is uploaded — no separate setup step before the first purchase can be recorded.",
+    ],
+    quotes: [
+      {
+        quote:
+          "I used to hand my accountant a stack of photos and hope they typed it right. Now I just upload the photo myself and it's already there.",
+        attribution: "Store owner, UnFold Streetwear",
+      },
+      {
+        quote:
+          "The invoice said one line, four models. What showed up was four different boxes. Being able to split that into what I actually counted is the whole point.",
+        attribution: "Store manager, on the receivables check",
+      },
+      {
+        quote:
+          "We used to find out we were short a size two weeks later, at the counter, in front of a customer. Now we know the day the box is opened.",
+        attribution: "Store owner, UnFold Streetwear",
+      },
+    ],
+    demoVideoUrl: null,
+    e2eSpec: null,
+  },
 ];
