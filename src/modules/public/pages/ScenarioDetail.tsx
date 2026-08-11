@@ -93,6 +93,38 @@ export default function ScenarioDetail() {
         <p className="mt-3 text-base-content leading-relaxed">{scenario.resolution}</p>
       </section>
 
+      {scenario.benefits.length > 0 && (
+        <section className="mt-8">
+          <h2 className="text-xs font-semibold tracking-wide uppercase text-emerald-600 dark:text-emerald-400">
+            Why store owners adopt this
+          </h2>
+          <ul className="mt-3 space-y-2">
+            {scenario.benefits.map((benefit) => (
+              <li key={benefit} className="flex gap-2 text-base-content leading-relaxed">
+                <span className="text-emerald-600 dark:text-emerald-400">✓</span>
+                <span>{benefit}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {scenario.quotes.length > 0 && (
+        <section className="mt-8 space-y-4">
+          {scenario.quotes.map((q) => (
+            <blockquote
+              key={q.quote}
+              className="border-l-4 border-emerald-300 dark:border-emerald-700 pl-4 italic text-base-content/80"
+            >
+              "{q.quote}"
+              <footer className="mt-1 text-sm not-italic text-base-content/60">
+                — {q.attribution}
+              </footer>
+            </blockquote>
+          ))}
+        </section>
+      )}
+
       {scenario.demoVideoUrl && (
         <section className="mt-10">
           <a

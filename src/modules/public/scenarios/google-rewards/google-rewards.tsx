@@ -38,12 +38,17 @@ const flowSteps = [
   {
     title: "Review, right there",
     detail:
-      "Chrome opens the store's public Google review page. The customer rates and writes a line while it's still fresh.",
+      "Chrome opens the store's public review page. The customer leaves a Google review, or — if typing feels like a chore — taps the mic and records a 20-second voice review instead.",
   },
   {
     title: "Reward points, logged automatically",
     detail:
-      "StoreNode credits 5% of the bill as reward points against the customer's phone number — no manual entry by staff.",
+      "StoreNode credits 5% of the bill as reward points against the customer's phone number — no manual entry by staff. A birthday reward is credited the same way on their next visit around their birthday.",
+  },
+  {
+    title: "Redeemed on a future visit",
+    detail:
+      "Next time that phone number is at the counter, staff pull up the running point balance and apply it straight to the new bill as a discount — no punch card, no manual math.",
   },
 ];
 
@@ -127,6 +132,27 @@ export default function GoogleRewardsScenario() {
         </p>
       </section>
 
+      {scenario.benefits.length > 0 && (
+        <section className="mt-8">
+          <h2 className="text-xs font-semibold tracking-wide uppercase text-emerald-600 dark:text-emerald-400">
+            Why store owners adopt this
+          </h2>
+          <ul className="mt-3 space-y-2">
+            {scenario.benefits.map((benefit) => (
+              <li
+                key={benefit}
+                className="flex gap-2 text-base-content leading-relaxed"
+              >
+                <span className="text-emerald-600 dark:text-emerald-400">
+                  ✓
+                </span>
+                <span>{benefit}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
       {/* Working details specific to this scenario — the step-by-step flow
           and a worked reward example, developed independently of the
           generic scenario template. */}
@@ -170,6 +196,22 @@ export default function GoogleRewardsScenario() {
           desk to type in.
         </p>
       </section>
+
+      {scenario.quotes.length > 0 && (
+        <section className="mt-10 space-y-4">
+          {scenario.quotes.map((q) => (
+            <blockquote
+              key={q.quote}
+              className="border-l-4 border-emerald-300 dark:border-emerald-700 pl-4 italic text-base-content/80"
+            >
+              "{q.quote}"
+              <footer className="mt-1 text-sm not-italic text-base-content/60">
+                — {q.attribution}
+              </footer>
+            </blockquote>
+          ))}
+        </section>
+      )}
 
       {scenario.demoVideoUrl && (
         <section className="mt-10">
