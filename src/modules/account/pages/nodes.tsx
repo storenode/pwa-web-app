@@ -15,18 +15,14 @@ export default function BrowseAllNodes() {
 
   return (
     <>
-      <div className="card w-full bg-base-200 card-xs shadow-sm p-6">
-        <div className="card-body">
-          <div className="flex items-center justify-end mb-4">
-            {canManageNodes && (
-              <a href="/node/new" className="btn btn-primary cursor-pointer">
-                Add Node
-              </a>
-            )}
-          </div>
-          <NodesTable />
-        </div>
+      <div className="flex items-center justify-end mb-4">
+        {canManageNodes && (
+          <a href="/node/new" className="btn btn-primary cursor-pointer">
+            Add Node
+          </a>
+        )}
       </div>
+      <NodesTable />
     </>
   );
 }

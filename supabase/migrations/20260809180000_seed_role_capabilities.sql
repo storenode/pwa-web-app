@@ -4,8 +4,16 @@
 -- "<resource>:*" / "*:*" wildcard convention.
 
 update "public"."role_definitions"
+set "capabilities" = '["dashboard:*", "nodes:*", "store:*", "rewards:*", "voice_reviews:*", "suppliers:*", "supplier_invoices:*"]'::jsonb
+where "role_key" = 'platform_admin';
+
+update "public"."role_definitions"
 set "capabilities" = '["dashboard:*", "nodes:*", "store:*", "rewards:*", "voice_reviews:*"]'::jsonb
-where "role_key" in ('platform_admin', 'platform_manager', 'brand_admin', 'store_manager');
+where "role_key" = 'platform_manager';
+
+update "public"."role_definitions"
+set "capabilities" = '["dashboard:*", "store:*", "rewards:*", "voice_reviews:*", "nodes:browse_all", "nodes:view", "nodes:create_store", "suppliers:*"]'::jsonb
+where "role_key" in ('store_manager', 'brand_admin');
 
 update "public"."role_definitions"
 set "capabilities" = '["dashboard:*", "store:*"]'::jsonb

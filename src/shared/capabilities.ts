@@ -37,6 +37,12 @@ export const CAPABILITIES = {
 
   // Voice reviews
   "voice_reviews:view": "voice_reviews:view",
+
+  // Suppliers & procurement (Stock & Distribution pillar)
+  "suppliers:view": "suppliers:view",
+  "suppliers:manage": "suppliers:manage",
+  "supplier_invoices:view": "supplier_invoices:view",
+  "supplier_invoices:manage": "supplier_invoices:manage",
 } as const;
 
 export type CapabilityKey = keyof typeof CAPABILITIES;
