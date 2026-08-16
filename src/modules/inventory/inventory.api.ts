@@ -67,8 +67,8 @@ export async function fetchSupplierInvoices(
   if (error) throw error;
 
   return (data ?? []).map((row) => {
-    const supplier = row.suppliers as { name: string } | null;
-    const statusRef = row.supplier_invoice_statuses as {
+    const supplier = row.suppliers as unknown as { name: string } | null;
+    const statusRef = row.supplier_invoice_statuses as unknown as {
       display_name: string;
     } | null;
 
