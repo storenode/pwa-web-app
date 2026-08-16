@@ -166,7 +166,7 @@ export default function SideNav() {
   }));
 
   return (
-    <div className="flex min-h-full flex-col items-start bg-base-50 border-r border-base-300 is-drawer-close:w-14 is-drawer-open:w-64">
+    <div className="flex min-h-full flex-col items-start bg-base-100 border-r border-base-300 is-drawer-close:w-14 is-drawer-open:w-64">
       <div className="flex flex-col items-center w-full items-center justify-center py-4 px-2 is-drawer-close:hidden">
         <div className="flex justify-end w-full">
           <label

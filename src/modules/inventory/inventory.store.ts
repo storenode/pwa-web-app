@@ -3,38 +3,27 @@ import type { ExtractedInvoice } from "./inventory.types";
 
 interface InventoryState {
   isExtracting: boolean;
-  /** Raw extraction responses, most recent first — kept around for review before they're turned into supplier_invoices rows. */
-  extractedInvoices: ExtractedInvoice[];
+  /** Raw extraction response for the invoice currently being reviewed before it's turned into a supplier_invoices row. */
+  extractedInvoice: ExtractedInvoice | null;
   setExtracting: (isExtracting: boolean) => void;
-  addExtractedInvoice: (invoice: ExtractedInvoice) => void;
-  /** Replaces a draft in place, e.g. after the reviewer edits fields before approving. */
-  updateExtractedInvoice: (index: number, invoice: ExtractedInvoice) => void;
-  /** Drops a draft the reviewer decided not to keep. */
-  removeExtractedInvoice: (index: number) => void;
+  setExtractedInvoice: (invoice: ExtractedInvoice) => void;
+  /** Replaces the draft in place, e.g. after the reviewer edits fields before approving. */
+  updateExtractedInvoice: (invoice: ExtractedInvoice) => void;
+  /** Drops the draft the reviewer decided not to keep. */
+  clearExtractedInvoice: () => void;
   reset: () => void;
 }
 
 const initialState = {
   isExtracting: false,
-  extractedInvoices: [] as ExtractedInvoice[],
+  extractedInvoice: null as ExtractedInvoice | null,
 };
 
 export const useInventoryStore = create<InventoryState>()((set) => ({
   ...initialState,
   setExtracting: (isExtracting) => set({ isExtracting }),
-  addExtractedInvoice: (invoice) =>
-    set((state) => ({
-      extractedInvoices: [invoice, ...state.extractedInvoices],
-    })),
-  updateExtractedInvoice: (index, invoice) =>
-    set((state) => ({
-      extractedInvoices: state.extractedInvoices.map((existing, i) =>
-        i === index ? invoice : existing,
-      ),
-    })),
-  removeExtractedInvoice: (index) =>
-    set((state) => ({
-      extractedInvoices: state.extractedInvoices.filter((_, i) => i !== index),
-    })),
+  setExtractedInvoice: (invoice) => set({ extractedInvoice: invoice }),
+  updateExtractedInvoice: (invoice) => set({ extractedInvoice: invoice }),
+  clearExtractedInvoice: () => set({ extractedInvoice: null }),
   reset: () => set(initialState),
 }));

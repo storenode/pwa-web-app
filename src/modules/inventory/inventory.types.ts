@@ -49,6 +49,10 @@ export interface ExtractedInvoiceLineItem {
   sgst_percent: number;
   tax_amount: number;
   line_total: number;
+  /** Receivables-check status (supplier_invoice_item_statuses.code) — not part of the AI extraction, defaulted to 'pending' after extraction. */
+  status?: string;
+  /** Reviewer comment for this line item, e.g. noting a shortfall or damage. */
+  notes?: string | null;
 }
 
 export interface ExtractedInvoice {
@@ -61,4 +65,31 @@ export interface ExtractedInvoice {
   tax_total: number;
   total_amount: number;
   authorized_signature_present: boolean;
+  /** supplier_invoices.status (supplier_invoice_statuses.code) — not part of the AI extraction, defaulted to 'captured' after extraction. */
+  status?: string;
+  /** Reviewer comment for the invoice as a whole. */
+  notes?: string | null;
+  /** supplier_invoices.payment_status — set by the reviewer once payment is actually made, defaulted to 'unpaid'. */
+  payment_status?: "unpaid" | "paid";
+  /** supplier_invoices.paid_at — set automatically when payment_status flips to 'paid'. */
+  paid_at?: string | null;
+}
+
+/** A row from supplier_invoice_statuses or supplier_invoice_item_statuses — reference data for status dropdowns/badges. */
+export interface StatusOption {
+  code: string;
+  displayName: string;
+  description: string | null;
+}
+
+/** A row in the purchase invoices list — summary fields only, for the table view. */
+export interface SupplierInvoiceListItem {
+  id: string;
+  invoiceNumber: string;
+  invoiceDate: string;
+  supplierName: string;
+  status: string;
+  statusDisplayName: string;
+  paymentStatus: string;
+  totalAmount: number;
 }

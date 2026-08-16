@@ -31,7 +31,7 @@ export default function DashboardLayout() {
       />
       <div className="drawer-content flex flex-col h-screen">
         <Navbar />
-        <main className="flex-1 min-h-0 overflow-y-auto p-4 bg-base-300">
+        <main className="flex-1 min-h-0 overflow-y-auto p-1 md:p-4 bg-base-300">
           <Outlet />
         </main>
         <Footer />

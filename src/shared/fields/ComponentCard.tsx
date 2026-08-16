@@ -31,7 +31,7 @@ const ComponentCard: React.FC<ComponentCardProps> = ({
       </div>
 
       {/* Card Body */}
-      <div className="p-4 border-t border-base-300 sm:p-6">
+      <div className="p-1 md:p-4 border-t border-base-300">
         <div className="space-y-6">{children}</div>
       </div>
     </div>
