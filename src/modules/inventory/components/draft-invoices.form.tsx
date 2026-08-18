@@ -36,6 +36,8 @@ function useStatusOptions(
 interface DraftInvoicesFormProps {
   /** Locks every editable field — invoices past the 'captured' stage are view-only here. */
   readOnly?: boolean;
+  /** Lets the reviewer advance/change the invoice-level status — only once the invoice has been saved (has a real id) does changing this mean anything. */
+  canEditStatus?: boolean;
 }
 
 /**
@@ -45,6 +47,7 @@ interface DraftInvoicesFormProps {
  */
 export default function DraftInvoicesForm({
   readOnly = false,
+  canEditStatus = false,
 }: DraftInvoicesFormProps) {
   const { control, register } = useFormContext<DraftInvoicesFormValues>();
   const invoice = useWatch({ control, name: "invoice" });
@@ -79,12 +82,26 @@ export default function DraftInvoicesForm({
           disabled={readOnly}
           {...register("invoice.invoice.invoice_date")}
         />
-        <div className="flex flex-col gap-1 text-xs font-medium text-gray-600">
+        <label className="flex flex-col gap-1 text-xs font-medium text-gray-600">
           Status
-          <span className={`${inputClass} bg-gray-50 text-gray-700`}>
-            {invoiceStatusLabel ?? "—"}
-          </span>
-        </div>
+          {canEditStatus ? (
+            <select {...register("invoice.status")} className={inputClass}>
+              {invoiceStatusOptions.map((option) => (
+                <option
+                  key={option.code}
+                  value={option.code}
+                  title={option.description ?? undefined}
+                >
+                  {option.displayName}
+                </option>
+              ))}
+            </select>
+          ) : (
+            <span className={`${inputClass} bg-gray-50 text-gray-700`}>
+              {invoiceStatusLabel ?? "—"}
+            </span>
+          )}
+        </label>
       </div>
 
       <label className="flex flex-col gap-1 text-xs font-medium text-gray-600 w-full mb-2">

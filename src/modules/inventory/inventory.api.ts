@@ -87,22 +87,45 @@ export async function fetchSupplierInvoices(
 
 /**
  * Loads a saved invoice back into the draft-review shape for editing.
- * `source_extraction_json` is kept in lockstep with the reviewer-editable
- * form on every save (see saveSupplierInvoice below), so it's always the
- * authoritative snapshot to hydrate the form from — no need to reconstruct
- * it from the normalized columns.
+ *
+ * `source_extraction_json` is a snapshot written on every save, but it can
+ * drift from the normalized columns (a partial update, a direct DB edit, or
+ * — as happened before the (supplier_id, invoice_number) matching bug was
+ * fixed — a save that landed on a different row than the JSON came from).
+ * The normalized columns are the actual source of truth for the fields the
+ * reviewer edits directly, so they're layered on top of the JSON snapshot
+ * here rather than trusting the JSON alone.
  */
 export async function fetchSupplierInvoiceById(
   invoiceId: string,
 ): Promise<ExtractedInvoice> {
   const { data, error } = await supabase
     .from("supplier_invoices")
-    .select("source_extraction_json")
+    .select(
+      "source_extraction_json, invoice_number, invoice_type, invoice_date, status, notes, payment_status, paid_at, shipped_by, awb_no",
+    )
     .eq("id", invoiceId)
     .single();
 
   if (error) throw error;
-  return data.source_extraction_json as ExtractedInvoice;
+
+  const snapshot = data.source_extraction_json as ExtractedInvoice;
+
+  return {
+    ...snapshot,
+    status: data.status,
+    notes: data.notes,
+    payment_status: data.payment_status as ExtractedInvoice["payment_status"],
+    paid_at: data.paid_at,
+    invoice: {
+      ...snapshot.invoice,
+      invoice_number: data.invoice_number,
+      invoice_type: data.invoice_type as ExtractedInvoice["invoice"]["invoice_type"],
+      invoice_date: data.invoice_date,
+      shipped_by: data.shipped_by,
+      awb_no: data.awb_no,
+    },
+  };
 }
 
 /** Calls the extract-invoice edge function to extract structured data from an uploaded invoice file. */
@@ -156,9 +179,15 @@ async function findOrCreateSupplier(
 /**
  * Persists a reviewed draft invoice as a `captured` (pending) supplier_invoices
  * row plus its line items, auto-creating the supplier if it's not on file yet.
- * Safe to call again after edits — finds the existing row by
- * (supplier_id, invoice_number) and updates it, or inserts a new one, and
- * replaces the line items wholesale either way.
+ *
+ * When editing an already-saved invoice, pass its `existingInvoiceId` (from
+ * the route) so the update always targets that exact row — matching by
+ * (supplier_id, invoice_number) alone is unreliable once the supplier or
+ * number can be edited (or `findOrCreateSupplier` resolves to a different
+ * supplier row than the one originally linked), which was silently inserting
+ * a duplicate invoice instead of updating. Falls back to the
+ * (supplier_id, invoice_number) lookup only for brand-new saves, where no id
+ * exists yet.
  *
  * created_by is only ever set on the initial insert — re-saving after edits
  * (e.g. recording payment or shipping details later) must not reassign the
@@ -167,6 +196,7 @@ async function findOrCreateSupplier(
 export async function saveSupplierInvoice(
   nodeId: string,
   invoice: ExtractedInvoice,
+  existingInvoiceId?: string,
 ): Promise<string> {
   const supplierId = await findOrCreateSupplier(nodeId, invoice.supplier);
 
@@ -174,12 +204,18 @@ export async function saveSupplierInvoice(
     data: { user },
   } = await supabase.auth.getUser();
 
-  const { data: existing, error: findInvoiceError } = await supabase
-    .from("supplier_invoices")
-    .select("id, payment_status, paid_at")
-    .eq("supplier_id", supplierId)
-    .eq("invoice_number", invoice.invoice.invoice_number)
-    .maybeSingle();
+  const { data: existing, error: findInvoiceError } = existingInvoiceId
+    ? await supabase
+        .from("supplier_invoices")
+        .select("id, payment_status, paid_at")
+        .eq("id", existingInvoiceId)
+        .maybeSingle()
+    : await supabase
+        .from("supplier_invoices")
+        .select("id, payment_status, paid_at")
+        .eq("supplier_id", supplierId)
+        .eq("invoice_number", invoice.invoice.invoice_number)
+        .maybeSingle();
 
   if (findInvoiceError) throw findInvoiceError;
 

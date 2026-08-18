@@ -86,10 +86,16 @@ export default function AddEditInvoices() {
 
     setIsSaving(true);
     try {
-      await saveSupplierInvoice(activeNodeId, current);
+      await saveSupplierInvoice(
+        activeNodeId,
+        current,
+        isEditing ? invoiceId : undefined,
+      );
       clearExtractedInvoice();
       setValue("invoice", null);
       navigate("/inventory/invoices");
+    } catch (error) {
+      alert(error instanceof Error ? error.message : "Failed to save invoice.");
     } finally {
       setIsSaving(false);
     }
@@ -133,10 +139,6 @@ export default function AddEditInvoices() {
                   />
                 )}
               />
-            ) : isReadOnly ? (
-              <span className="rounded border border-gray-300 bg-gray-50 px-3 py-1.5 text-sm font-medium text-gray-600">
-                Read-only — status is past "Captured"
-              </span>
             ) : (
               <div className="flex gap-2">
                 <button
@@ -147,20 +149,22 @@ export default function AddEditInvoices() {
                 >
                   {isSaving ? "Saving…" : "Save"}
                 </button>
-                <button
-                  type="button"
-                  onClick={handleDelete}
-                  disabled={isSaving}
-                  className="rounded cursor-pointer border border-red-300 px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50"
-                >
-                  Delete
-                </button>
+                {!isReadOnly && (
+                  <button
+                    type="button"
+                    onClick={handleDelete}
+                    disabled={isSaving}
+                    className="rounded cursor-pointer border border-red-300 px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    Delete
+                  </button>
+                )}
               </div>
             )
           }
         >
           {invoice ? (
-            <DraftInvoicesForm readOnly={isReadOnly} />
+            <DraftInvoicesForm readOnly={isReadOnly} canEditStatus={isEditing} />
           ) : isLoadingInvoice ? (
             <div className="flex justify-center w-full text-sm text-gray-600">
               Loading invoice…
